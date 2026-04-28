@@ -300,7 +300,7 @@
     <script src="script.js"></script>
     <script>
         // ── Admin Password Protection ─────────────────────────
-        const ADMIN_PASSWORD = "technova@admin2024";
+        const ADMIN_PASSWORD = "technova@admin";
         const isAdminAuth = sessionStorage.getItem('adminAuth');
 
         if (!isAdminAuth) {
@@ -320,7 +320,7 @@
 
         // ── Load Products ─────────────────────────────────────
         async function loadProducts() {
-            const res = await fetch('http://localhost:5000/api/products');
+            const res = await fetch('https://technova-backend-ey24.onrender.com');
             allProducts = await res.json();
 
             document.getElementById('product-count').innerText = allProducts.length;
@@ -404,7 +404,7 @@
                 return alert('Please fill all fields!');
 
             try {
-                const res = await fetch('http://localhost:5000/api/products/add', {
+                const res = await fetch('https://technova-backend-ey24.onrender.com', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, price, img, cat, description })
@@ -451,7 +451,7 @@
             const description = document.getElementById('edit-desc').value.trim();
 
             try {
-                const res = await fetch(`http://localhost:5000/api/products/edit/${id}`, {
+                const res = await fetch(`https://technova-backend-ey24.onrender.com`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, price, img, cat, description })
@@ -471,7 +471,7 @@
             if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
 
             try {
-                const res = await fetch(`http://localhost:5000/api/products/delete/${id}`, {
+                const res = await fetch(`https://technova-backend-ey24.onrender.com`, {
                     method: 'DELETE'
                 });
                 if (!res.ok) throw new Error('Failed to delete product');

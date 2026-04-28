@@ -1,4 +1,4 @@
-const BASE_URL = 'https://technova-backend-ey24.onrender.com/api';
+const BASE_URL = 'https://technova-backend-ey24.onrender.com';
  
 // ── Helper: always attach JWT token to requests ──────────────
 function authHeaders() {

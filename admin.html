@@ -97,7 +97,6 @@
         .stat-box h3 { font-size: 1.8rem; color: var(--primary); font-weight: 900; }
         .stat-box p { font-size: 0.75rem; opacity: 0.6; margin-top: 5px; }
 
-        /* Edit Modal */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.7); display: none; align-items: center;
@@ -131,29 +130,15 @@
 
     <div class="admin-wrapper">
 
-        <!-- Stats -->
         <div class="stats-row">
-            <div class="stat-box">
-                <h3 id="stat-products">0</h3>
-                <p>Total Products</p>
-            </div>
-            <div class="stat-box">
-                <h3 id="stat-categories">0</h3>
-                <p>Categories</p>
-            </div>
-            <div class="stat-box">
-                <h3 id="stat-sale">OFF</h3>
-                <p>Sale Status</p>
-            </div>
-            <div class="stat-box">
-                <h3 id="stat-discount">0%</h3>
-                <p>Discount</p>
-            </div>
+            <div class="stat-box"> <h3 id="stat-products">0</h3> <p>Total Products</p> </div>
+            <div class="stat-box"> <h3 id="stat-categories">0</h3> <p>Categories</p> </div>
+            <div class="stat-box"> <h3 id="stat-sale">OFF</h3> <p>Sale Status</p> </div>
+            <div class="stat-box"> <h3 id="stat-discount">0%</h3> <p>Discount</p> </div>
         </div>
 
         <div class="admin-grid">
 
-            <!-- Add Product Form -->
             <div class="admin-card">
                 <h3><i class="fas fa-plus-circle"></i> Add New Product</h3>
                 <div class="form-group">
@@ -171,12 +156,9 @@
                 <div class="form-group">
                     <label>Category</label>
                     <select id="add-cat">
-                        <option value="Laptop">Laptop</option>
-                        <option value="Mobile">Mobile</option>
-                        <option value="Audio">Audio</option>
-                        <option value="Watch">Watch</option>
-                        <option value="Gaming">Gaming</option>
-                        <option value="Accessory">Accessory</option>
+                        <option value="Laptop">Laptop</option> <option value="Mobile">Mobile</option>
+                        <option value="Audio">Audio</option> <option value="Watch">Watch</option>
+                        <option value="Gaming">Gaming</option> <option value="Accessory">Accessory</option>
                         <option value="Tablet">Tablet</option>
                     </select>
                 </div>
@@ -189,7 +171,6 @@
                 </button>
             </div>
 
-            <!-- Sale Settings -->
             <div class="admin-card">
                 <h3><i class="fas fa-tag"></i> Sale Settings</h3>
                 <div class="sale-toggle">
@@ -215,37 +196,18 @@
                     <h3 style="font-size:1rem; font-weight:800; margin-bottom:15px; color:var(--primary);">
                         <i class="fas fa-chart-bar"></i> Quick Stats
                     </h3>
-                    <p style="font-size:0.85rem; opacity:0.7; margin-bottom:8px;">
-                        <i class="fas fa-box"></i> Products in store: <strong id="quick-total">0</strong>
-                    </p>
-                    <p style="font-size:0.85rem; opacity:0.7; margin-bottom:8px;">
-                        <i class="fas fa-laptop"></i> Laptops: <strong id="quick-laptop">0</strong>
-                    </p>
-                    <p style="font-size:0.85rem; opacity:0.7; margin-bottom:8px;">
-                        <i class="fas fa-mobile-alt"></i> Mobiles: <strong id="quick-mobile">0</strong>
-                    </p>
-                    <p style="font-size:0.85rem; opacity:0.7; margin-bottom:8px;">
-                        <i class="fas fa-gamepad"></i> Gaming: <strong id="quick-gaming">0</strong>
-                    </p>
-                    <p style="font-size:0.85rem; opacity:0.7;">
-                        <i class="fas fa-tablet-alt"></i> Tablets: <strong id="quick-tablet">0</strong>
-                    </p>
+                    <div id="dynamic-stats-container"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Products Table -->
         <div class="admin-card">
             <h3><i class="fas fa-list"></i> All Products (<span id="product-count">0</span>)</h3>
             <div style="overflow-x:auto;">
                 <table class="product-table">
                     <thead>
                         <tr>
-                            <th>Image</th>
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Price</th>
-                            <th>Actions</th>
+                            <th>Image</th> <th>Name</th> <th>Category</th> <th>Price</th> <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="products-tbody"></tbody>
@@ -254,52 +216,32 @@
         </div>
     </div>
 
-    <!-- Edit Modal -->
     <div class="modal-overlay" id="editModal">
         <div class="modal-box">
             <button class="modal-close" onclick="closeModal()">×</button>
             <h3><i class="fas fa-edit"></i> Edit Product</h3>
             <input type="hidden" id="edit-id">
-            <div class="form-group">
-                <label>Product Name</label>
-                <input type="text" id="edit-name">
-            </div>
-            <div class="form-group">
-                <label>Price (₹)</label>
-                <input type="number" id="edit-price">
-            </div>
-            <div class="form-group">
-                <label>Image URL</label>
-                <input type="text" id="edit-img">
-            </div>
+            <div class="form-group"> <label>Product Name</label> <input type="text" id="edit-name"> </div>
+            <div class="form-group"> <label>Price (₹)</label> <input type="number" id="edit-price"> </div>
+            <div class="form-group"> <label>Image URL</label> <input type="text" id="edit-img"> </div>
             <div class="form-group">
                 <label>Category</label>
                 <select id="edit-cat">
-                    <option value="Laptop">Laptop</option>
-                    <option value="Mobile">Mobile</option>
-                    <option value="Audio">Audio</option>
-                    <option value="Watch">Watch</option>
-                    <option value="Gaming">Gaming</option>
-                    <option value="Accessory">Accessory</option>
+                    <option value="Laptop">Laptop</option> <option value="Mobile">Mobile</option>
+                    <option value="Audio">Audio</option> <option value="Watch">Watch</option>
+                    <option value="Gaming">Gaming</option> <option value="Accessory">Accessory</option>
                     <option value="Tablet">Tablet</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label>Description</label>
-                <textarea id="edit-desc" rows="3"></textarea>
-            </div>
-            <button class="btn-primary" onclick="saveEdit()">
-                <i class="fas fa-save"></i> Save Changes
-            </button>
+            <div class="form-group"> <label>Description</label> <textarea id="edit-desc" rows="3"></textarea> </div>
+            <button class="btn-primary" onclick="saveEdit()"> <i class="fas fa-save"></i> Save Changes </button>
         </div>
     </div>
 
     <div class="success-toast" id="toast"></div>
 
     <script src="api.js"></script>
-    <script src="script.js"></script>
     <script>
-        // ── Admin Password Protection ─────────────────────────
         const ADMIN_PASSWORD = "technova@admin";
         const isAdminAuth = sessionStorage.getItem('adminAuth');
 
@@ -313,27 +255,32 @@
             }
         }
 
-        // ── Theme ─────────────────────────────────────────────
         document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
-
         let allProducts = [];
 
-        // ── Load Products ─────────────────────────────────────
         async function loadProducts() {
             const res = await fetch('http://localhost:5000/api/products');
             allProducts = await res.json();
 
             document.getElementById('product-count').innerText = allProducts.length;
             document.getElementById('stat-products').innerText = allProducts.length;
-            document.getElementById('quick-total').innerText = allProducts.length;
 
-            const cats = [...new Set(allProducts.map(p => p.cat))];
-            document.getElementById('stat-categories').innerText = cats.length;
+            // Calculate categories
+            const categoryCounts = {};
+            allProducts.forEach(p => {
+                categoryCounts[p.cat] = (categoryCounts[p.cat] || 0) + 1;
+            });
 
-            document.getElementById('quick-laptop').innerText = allProducts.filter(p => p.cat === 'Laptop').length;
-            document.getElementById('quick-mobile').innerText = allProducts.filter(p => p.cat === 'Mobile').length;
-            document.getElementById('quick-gaming').innerText = allProducts.filter(p => p.cat === 'Gaming').length;
-            document.getElementById('quick-tablet').innerText = allProducts.filter(p => p.cat === 'Tablet').length;
+            // Update stats grid
+            document.getElementById('stat-categories').innerText = Object.keys(categoryCounts).length;
+
+            // Render Dynamic Stats
+            const statsContainer = document.getElementById('dynamic-stats-container');
+            statsContainer.innerHTML = Object.keys(categoryCounts).map(cat => `
+                <p style="font-size:0.85rem; opacity:0.7; margin-bottom:8px;">
+                    <i class="fas fa-tag"></i> ${cat}: <strong>${categoryCounts[cat]}</strong>
+                </p>
+            `).join('');
 
             const tbody = document.getElementById('products-tbody');
             tbody.innerHTML = allProducts.map(p => `
@@ -350,7 +297,6 @@
             `).join('');
         }
 
-        // ── Sale Settings ─────────────────────────────────────
         async function loadSaleSettings() {
             const settings = await fetchSettings();
             document.getElementById('sale-toggle').checked = settings.isSaleActive;
@@ -369,133 +315,82 @@
 
         async function saveSaleSettings() {
             const isActive = document.getElementById('sale-toggle').checked;
-            const title    = document.getElementById('sale-title').value;
+            const title = document.getElementById('sale-title').value;
             const discount = parseInt(document.getElementById('sale-discount').value);
-
             if (!title || !discount) return alert('Please fill all sale fields!');
-
             try {
-                await updateSettings({
-                    isSaleActive: isActive,
-                    saleTitle: title,
-                    discountPercentage: discount
-                });
-
+                await updateSettings({ isSaleActive: isActive, saleTitle: title, discountPercentage: discount });
                 document.getElementById('stat-sale').innerText = isActive ? 'ON' : 'OFF';
                 document.getElementById('stat-sale').style.color = isActive ? '#22c55e' : '#ef4444';
                 document.getElementById('stat-discount').innerText = discount + '%';
-                document.getElementById('sale-status-text').innerText = isActive ? 'Sale is ON' : 'Sale is OFF';
-
-                showToast('✅ Sale settings saved to database!');
-            } catch(err) {
-                alert('Error saving settings: ' + err.message);
-            }
+                showToast('✅ Sale settings saved!');
+            } catch(err) { alert('Error: ' + err.message); }
         }
 
-        // ── Add Product ───────────────────────────────────────
         async function addProduct() {
-            const name  = document.getElementById('add-name').value.trim();
+            const name = document.getElementById('add-name').value.trim();
             const price = parseInt(document.getElementById('add-price').value);
-            const img   = document.getElementById('add-img').value.trim();
-            const cat   = document.getElementById('add-cat').value;
+            const img = document.getElementById('add-img').value.trim();
+            const cat = document.getElementById('add-cat').value;
             const description = document.getElementById('add-desc').value.trim();
-
-            if (!name || !price || !img || !description)
-                return alert('Please fill all fields!');
-
+            if (!name || !price || !img || !description) return alert('Please fill all fields!');
             try {
-                const res = await fetch('http://localhost:5000/api/products/add', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                await fetch('http://localhost:5000/api/products/add', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, price, img, cat, description })
                 });
-                if (!res.ok) throw new Error('Failed to add product');
-
-                document.getElementById('add-name').value = '';
-                document.getElementById('add-price').value = '';
-                document.getElementById('add-img').value = '';
-                document.getElementById('add-desc').value = '';
-
                 await loadProducts();
-                showToast('✅ Product added successfully!');
-            } catch(err) {
-                alert('Error: ' + err.message);
-            }
+                showToast('✅ Product added!');
+            } catch(err) { alert('Error: ' + err.message); }
         }
 
-        // ── Edit Product ──────────────────────────────────────
         function openEdit(id) {
             const p = allProducts.find(x => x._id === id);
-            if (!p) return;
-
-            document.getElementById('edit-id').value   = p._id;
+            document.getElementById('edit-id').value = p._id;
             document.getElementById('edit-name').value = p.name;
             document.getElementById('edit-price').value = p.price;
-            document.getElementById('edit-img').value  = p.img;
-            document.getElementById('edit-cat').value  = p.cat;
+            document.getElementById('edit-img').value = p.img;
+            document.getElementById('edit-cat').value = p.cat;
             document.getElementById('edit-desc').value = p.description;
-
             document.getElementById('editModal').style.display = 'flex';
         }
 
-        function closeModal() {
-            document.getElementById('editModal').style.display = 'none';
-        }
+        function closeModal() { document.getElementById('editModal').style.display = 'none'; }
 
         async function saveEdit() {
-            const id    = document.getElementById('edit-id').value;
-            const name  = document.getElementById('edit-name').value.trim();
+            const id = document.getElementById('edit-id').value;
+            const name = document.getElementById('edit-name').value.trim();
             const price = parseInt(document.getElementById('edit-price').value);
-            const img   = document.getElementById('edit-img').value.trim();
-            const cat   = document.getElementById('edit-cat').value;
+            const img = document.getElementById('edit-img').value.trim();
+            const cat = document.getElementById('edit-cat').value;
             const description = document.getElementById('edit-desc').value.trim();
-
             try {
-                const res = await fetch(`http://localhost:5000/api/products/edit/${id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
+                await fetch(`http://localhost:5000/api/products/edit/${id}`, {
+                    method: 'PUT', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, price, img, cat, description })
                 });
-                if (!res.ok) throw new Error('Failed to update product');
-
                 closeModal();
                 await loadProducts();
-                showToast('✅ Product updated successfully!');
-            } catch(err) {
-                alert('Error: ' + err.message);
-            }
+                showToast('✅ Product updated!');
+            } catch(err) { alert('Error: ' + err.message); }
         }
 
-        // ── Delete Product ────────────────────────────────────
         async function deleteProduct(id, name) {
-            if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
-
+            if (!confirm(`Are you sure?`)) return;
             try {
-                const res = await fetch(`http://localhost:5000/api/products/delete/${id}`, {
-                    method: 'DELETE'
-                });
-                if (!res.ok) throw new Error('Failed to delete product');
-
+                await fetch(`http://localhost:5000/api/products/delete/${id}`, { method: 'DELETE' });
                 await loadProducts();
                 showToast('🗑️ Product deleted!');
-            } catch(err) {
-                alert('Error: ' + err.message);
-            }
+            } catch(err) { alert('Error: ' + err.message); }
         }
 
-        // ── Toast Notification ────────────────────────────────
         function showToast(msg) {
             const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            toast.style.display = 'block';
+            toast.innerText = msg; toast.style.display = 'block';
             setTimeout(() => toast.style.display = 'none', 3000);
         }
 
-        function logoutAdmin() {
-            sessionStorage.removeItem('adminAuth');
-            window.location.href = 'index.html';
-        }
-
+        function logoutAdmin() { sessionStorage.removeItem('adminAuth'); window.location.href = 'index.html'; }
         function toggleTheme() {
             const html = document.documentElement;
             const isDark = html.getAttribute('data-theme') === 'dark';
@@ -503,7 +398,6 @@
             localStorage.setItem('theme', isDark ? 'light' : 'dark');
         }
 
-        // ── Init ──────────────────────────────────────────────
         loadProducts();
         loadSaleSettings();
     </script>

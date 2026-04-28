@@ -113,3 +113,20 @@ nav {
   font-size: 20px;
   text-decoration: none;
 }
+
+
+.topbar{
+  background:#111;
+  padding:12px 20px;
+}
+
+.topbar a{
+  color:#fff;
+  text-decoration:none;
+  font-size:16px;
+  font-weight:bold;
+}
+
+.topbar a:hover{
+  color:#3b82f6;
+}

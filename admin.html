@@ -471,7 +471,7 @@
             if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
 
             try {
-                const res = await fetch(`https://technova-backend-ey24.onrender.com/api/products/delete/:id`, {
+                const res = await fetch(`https://technova-backend-ey24.onrender.com/api/products/delete/PRODUCT_ID`, {
                     method: 'DELETE'
                 });
                 if (!res.ok) throw new Error('Failed to delete product');

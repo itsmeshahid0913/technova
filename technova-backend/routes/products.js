@@ -62,7 +62,7 @@ router.post('/seed', async (req, res) => {
             { name: "Keychron K2",         price: 9500,   img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400", cat: "Accessory", description: "Keychron K2 is a compact wireless mechanical keyboard with hot-swappable switches, RGB backlight and Mac/Windows compatibility." },
             { name: "Anker 65W Charger",   price: 2999,   img: "https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=400", cat: "Accessory", description: "Anker 65W USB-C GaN charger with 3 ports, charges laptop and phone simultaneously, compact size and advanced safety features." },
             { name: "Samsung T7 SSD",      price: 7999,   img: "https://images.unsplash.com/photo-1597872200969-2b65d56bd16b?w=400", cat: "Accessory", description: "Samsung T7 Portable SSD with 1TB storage, USB 3.2 speeds up to 1050MB/s, password protection and shock resistant metal body." },
-            { name: "Belkin MagSafe Stand", price: 4999,  img: "https://images.unsplash.com/photo-1586449480537-3a7f5ee6b18f?w=400", cat: "Accessory", description: "Belkin MagSafe 3-in-1 wireless charging stand for iPhone, Apple Watch and AirPods simultaneously. Fast 15W MagSafe charging." },
+            
 
             // ── TABLETS ──────────────────────────────────────────────
             { name: "iPad Pro M2",         price: 79900,  img: "https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400", cat: "Tablet", description: "iPad Pro M2 with Apple M2 chip, 11-inch Liquid Retina display, ProMotion 120Hz, Thunderbolt port and all-day battery life." },

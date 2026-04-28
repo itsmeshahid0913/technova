@@ -320,7 +320,7 @@
 
         // ── Load Products ─────────────────────────────────────
         async function loadProducts() {
-            const res = await fetch('https://technova-backend-ey24.onrender.com');
+            const res = await fetch('https://technova-backend-ey24.onrender.com/api/products');
             allProducts = await res.json();
 
             document.getElementById('product-count').innerText = allProducts.length;
@@ -404,7 +404,7 @@
                 return alert('Please fill all fields!');
 
             try {
-                const res = await fetch('https://technova-backend-ey24.onrender.com', {
+                const res = await fetch('https://technova-backend-ey24.onrender.com/api/products/add', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, price, img, cat, description })
@@ -451,7 +451,7 @@
             const description = document.getElementById('edit-desc').value.trim();
 
             try {
-                const res = await fetch(`https://technova-backend-ey24.onrender.com`, {
+                const res = await fetch(`https://technova-backend-ey24.onrender.com/api/products/edit/${id}`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, price, img, cat, description })
@@ -471,7 +471,7 @@
             if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
 
             try {
-                const res = await fetch(`https://technova-backend-ey24.onrender.com`, {
+                const res = await fetch(`https://technova-backend-ey24.onrender.com/api/products/delete/:id`, {
                     method: 'DELETE'
                 });
                 if (!res.ok) throw new Error('Failed to delete product');

@@ -5,54 +5,241 @@
     <title>Tech Nova | Your Cart</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
     <style>
-        .cart-wrapper { max-width: 800px; margin: 40px auto; padding: 0 5%; }
-        .cart-item {
-            display: flex; align-items: center; justify-content: space-between;
-            background: var(--card); padding: 20px; border-radius: 12px;
-            margin-bottom: 15px; border: 1px solid var(--border);
-            animation: fadeIn 0.3s ease;
+        /* Light Theme (Default) */
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --primary: #3b82f6;
+            --text: #0f172a;
+            --text-dim: #64748b;
+            --border: #e2e8f0;
+            --danger: #ef4444;
         }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .item-info { display: flex; align-items: center; gap: 20px; }
-        .item-info img { width: 60px; height: 60px; object-fit: contain; }
-        
-        .qty-controls { display: flex; align-items: center; gap: 12px; background: var(--bg); padding: 5px 12px; border-radius: 8px; border: 1px solid var(--border); }
-        .qty-btn { background: none; border: none; color: var(--primary); cursor: pointer; font-weight: bold; font-size: 1.1rem; }
-        .trash-btn { color: #ef4444; border: none; background: none; cursor: pointer; font-size: 1.1rem; margin-left: 10px; }
-        
-        .cart-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 30px; border-top: 2px solid var(--border); padding-top: 20px; }
-        .clear-btn { background: #fee2e2; color: #ef4444; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; }
-        .checkout-btn { background: var(--primary); color: white; border: none; padding: 12px 40px; border-radius: 8px; cursor: pointer; font-weight: 700; }
+        /* Dark Theme Override */
+        [data-theme="dark"] {
+            --bg: #0b0e14;
+            --card: #151a24;
+            --primary: #3b82f6;
+            --text: #ffffff;
+            --text-dim: #94a3b8;
+            --border: #262d3d;
+            --danger: #ef4444;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        /* --- Refined Nav --- */
+        nav {
+            padding: 20px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+        }
+        .brand { font-weight: 900; color: var(--primary); font-size: 1.2rem; letter-spacing: 1px; }
+
+        /* --- Cart Layout --- */
+        .cart-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 900px) {
+            .cart-container { grid-template-columns: 1fr; }
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            background: var(--card);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border);
+            transition: 0.3s;
+        }
+        .cart-item:hover { border-color: var(--primary); transform: translateX(5px); }
+
+        .item-img {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            background: var(--bg);
+            border-radius: 12px;
+            padding: 10px;
+        }
+
+        .item-details { flex: 1; padding: 0 20px; }
+        .item-details h4 { margin: 0 0 5px 0; font-size: 1rem; }
+        .item-details p { margin: 0; color: var(--primary); font-weight: 700; }
+
+        /* --- Controls --- */
+        .qty-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: var(--bg);
+            padding: 8px 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+        .qty-btn {
+            background: none; border: none; color: var(--primary);
+            cursor: pointer; font-size: 1.2rem; font-weight: bold;
+            transition: 0.2s;
+        }
+        .qty-btn:hover { transform: scale(1.2); }
+
+        .trash-btn {
+            color: var(--text-dim);
+            border: none; background: none;
+            cursor: pointer; font-size: 1.1rem;
+            margin-left: 20px;
+            transition: 0.3s;
+        }
+        .trash-btn:hover { color: var(--danger); transform: rotate(10deg); }
+
+        /* --- Summary Sidebar --- */
+        .summary-card {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+        .total-row {
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: 0.3s;
+        }
+        .checkout-btn:hover { transform: translateY(-3px); filter: brightness(1.1); }
+
+        .clear-btn {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 8px 15px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .clear-btn:hover { background: var(--danger); color: white; }
+
+        /* --- Empty State --- */
+        .empty-cart {
+            text-align: center;
+            padding: 100px 20px;
+            grid-column: 1 / -1;
+        }
+        .empty-cart i { font-size: 4rem; color: var(--border); margin-bottom: 20px; }
     </style>
 </head>
 <body>
+
     <nav>
         <div class="brand" onclick="location.href='index.html'" style="cursor:pointer">TECH NOVA</div>
-        <a href="index.html" style="text-decoration:none; color:var(--text); font-weight:600;">← Back to Store</a>
+        <a href="index.html" style="text-decoration:none; color:var(--text-dim); font-size: 0.9rem; font-weight:600;">
+            <i class="fas fa-arrow-left"></i> Continue Shopping
+        </a>
     </nav>
 
-    <div class="cart-wrapper">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <h2>Shopping Cart</h2>
-            <button class="clear-btn" id="clear-btn-el" onclick="clearFullCart()"><i class="fas fa-trash"></i> Clear All</button>
-        </div>
-        
-        <div id="cart-render-area"></div>
-
-        <div class="cart-footer" id="cart-total-area">
-            <div>
-                <p style="opacity:0.7;">Grand Total</p>
-                <h2 id="total-price" style="color:var(--primary)">₹0</h2>
+    <div class="cart-container">
+        <div class="cart-main">
+            <div class="cart-header">
+                <h2>Shopping Bag</h2>
+                <button class="clear-btn" id="clear-btn-el" onclick="clearFullCart()">
+                    <i class="fas fa-trash-alt"></i> Clear Cart
+                </button>
             </div>
-            <button class="checkout-btn" onclick="location.href='checkout.html'">Checkout Now</button>
+            
+            <div id="cart-render-area">
+            </div>
+        </div>
+
+        <div class="summary-card" id="cart-total-area">
+            <h3 style="margin-top:0; margin-bottom:25px;">Order Summary</h3>
+            <div class="summary-row">
+                <span>Subtotal</span>
+                <span id="subtotal-price">₹0</span>
+            </div>
+            <div class="summary-row">
+                <span>Shipping</span>
+                <span style="color: #22c55e;">FREE</span>
+            </div>
+            <div class="summary-row">
+                <span>Tax (GST)</span>
+                <span>Calculated at checkout</span>
+            </div>
+            
+            <div class="total-row">
+                <div>
+                    <p style="margin:0; font-size: 0.8rem; opacity:0.6;">Grand Total</p>
+                    <h2 id="total-price" style="margin:0; color:var(--primary);">₹0</h2>
+                </div>
+            </div>
+
+            <button class="checkout-btn" onclick="location.href='checkout.html'">
+                Secure Checkout <i class="fas fa-shield-alt" style="margin-left:8px; font-size:0.8rem;"></i>
+            </button>
         </div>
     </div>
 
     <script src="api.js"></script>
     <script>
+        // Set initial theme
         document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
 
         async function renderCart() {
@@ -64,45 +251,43 @@
 
             if (cart.length === 0) {
                 container.innerHTML = `
-                    <div style="text-align:center; padding:80px 20px; opacity:0.6;">
-                        <i class="fas fa-shopping-basket" style="font-size:4rem; margin-bottom:20px; color:var(--border);"></i>
-                        <h3>Your cart is empty</h3>
-                        <p style="margin-bottom:25px;">Looks like you haven't added anything yet.</p>
-                        <button onclick="location.href='index.html'" class="checkout-btn">Start Shopping</button>
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-basket"></i>
+                        <h3>Your bag is empty</h3>
+                        <p style="color:var(--text-dim); margin-bottom:30px;">Looks like you haven't added any tech yet.</p>
+                        <button onclick="location.href='index.html'" class="checkout-btn" style="max-width:250px;">Go to Store</button>
                     </div>`;
                 totalArea.style.display = "none";
                 clearBtn.style.display = "none";
                 return;
             }
 
-            totalArea.style.display = "flex";
+            totalArea.style.display = "block";
             clearBtn.style.display = "block";
 
             container.innerHTML = cart.map(item => {
-                total += (item.price * item.qty);
+                const itemTotal = item.price * item.qty;
+                total += itemTotal;
                 return `
                     <div class="cart-item">
-                        <div class="item-info">
-                            <img src="${item.img}" alt="${item.name}">
-                            <div>
-                                <h4 style="font-size:0.95rem;">${item.name}</h4>
-                                <p style="font-weight:700; color:var(--primary);">₹${item.price.toLocaleString()}</p>
-                            </div>
+                        <img src="${item.img}" alt="${item.name}" class="item-img">
+                        <div class="item-details">
+                            <h4>${item.name}</h4>
+                            <p>₹${item.price.toLocaleString()}</p>
                         </div>
-                        <div style="display:flex; align-items:center;">
-                            <div class="qty-controls">
-                                <button class="qty-btn" onclick="changeQty('${item.productId}', -1)">-</button>
-                                <span style="min-width:20px; text-align:center;">${item.qty}</span>
-                                <button class="qty-btn" onclick="changeQty('${item.productId}', 1)">+</button>
-                            </div>
-                            <button class="trash-btn" onclick="deleteItem('${item.productId}')">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
+                        <div class="qty-wrapper">
+                            <button class="qty-btn" onclick="changeQty('${item.productId}', -1)">-</button>
+                            <span style="min-width:20px; text-align:center; font-weight:700;">${item.qty}</span>
+                            <button class="qty-btn" onclick="changeQty('${item.productId}', 1)">+</button>
                         </div>
+                        <button class="trash-btn" onclick="deleteItem('${item.productId}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
                     </div>`;
             }).join('');
 
             document.getElementById('total-price').innerText = `₹${total.toLocaleString()}`;
+            document.getElementById('subtotal-price').innerText = `₹${total.toLocaleString()}`;
         }
 
         async function changeQty(productId, change) {
@@ -116,7 +301,7 @@
         }
 
         async function clearFullCart() {
-            if(confirm("Are you sure you want to delete everything in your cart?")) {
+            if(confirm("Empty your entire shopping bag?")) {
                 await clearCart();
                 renderCart();
             }
@@ -124,45 +309,5 @@
 
         renderCart();
     </script>
-
-    <footer class="footer">
-  <div class="footer-container">
-
-    <div class="footer-col">
-      <h2>TechNova</h2>
-      <p>Your trusted tech store for gadgets, laptops, mobiles and accessories.</p>
-      
-    </div>
-
-    <div class="footer-col">
-      <h3>Shop</h3>
-      <a href="index.html">Home</a>
-      
-      <a href="cart.html">Cart</a>
-      <a href="orders.html">Orders</a>
-    </div>
-
-    <div class="footer-col">
-      <h3>Support</h3>
-     <a href="help.html">Help Center</a>
-<a href="returns.html">Returns</a>
-<a href="shipping.html">Shipping</a>
-<a href="privacy.html">Privacy Policy</a>
-    </div>
-
-    <div class="footer-col">
-      <h3>Contact</h3>
-      <p>Email: support@technova.com</p>
-      <p>Phone: +91 98765 43210</p>
-      <p>Bangalore, India</p>
-    </div>
-
-  </div>
-
-  <div class="footer-bottom">
-    © 2026 TechNova Store • All Rights Reserved
-  </div>
-</footer>
-
 </body>
 </html>

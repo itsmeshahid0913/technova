@@ -1,145 +1,191 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <title>Tech Nova | Your Orders</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
     <style>
-        .orders-wrapper { max-width: 900px; margin: 40px auto; padding: 0 5%; }
+        /* Light Theme (Default) */
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --primary: #3b82f6;
+            --text: #0f172a;
+            --text-dim: #64748b;
+            --border: #e2e8f0;
+            --success: #22c55e;
+        }
+
+        /* Dark Theme Override */
+        [data-theme="dark"] {
+            --bg: #0b0e14;
+            --card: #151a24;
+            --primary: #3b82f6;
+            --text: #ffffff;
+            --text-dim: #94a3b8;
+            --border: #262d3d;
+            --success: #22c55e;
+        }
+
+        body {
+            margin: 0; background: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif; min-height: 100vh;
+            display: flex; flex-direction: column;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        nav {
+            padding: 15px 5%; display: flex; justify-content: space-between;
+            align-items: center; background: var(--card); border-bottom: 1px solid var(--border);
+        }
+        .brand { font-weight: 900; color: var(--primary); font-size: 1.2rem; cursor: pointer; }
+
+        .orders-wrapper { max-width: 850px; margin: 40px auto; padding: 0 20px; width: 100%; box-sizing: border-box; }
+        
+        .page-title { margin-bottom: 30px; display: flex; align-items: center; gap: 15px; }
+        .page-title i { color: var(--primary); }
+
         .order-card {
             background: var(--card); border: 1px solid var(--border);
-            border-radius: 15px; padding: 25px; margin-bottom: 25px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-radius: 20px; padding: 30px; margin-bottom: 30px;
+            transition: 0.3s; position: relative; overflow: hidden;
         }
+        .order-card:hover { border-color: var(--primary); transform: translateY(-3px); }
+
         .order-header {
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 15px;
+            display: flex; justify-content: space-between; align-items: flex-start;
+            border-bottom: 1px solid var(--border); padding-bottom: 20px; margin-bottom: 20px;
         }
-        .order-id { font-weight: 800; color: var(--primary); font-size: 1.1rem; }
-        .order-date { font-size: 0.85rem; opacity: 0.6; }
         
+        .order-id { font-weight: 800; color: var(--primary); font-size: 1.1rem; display: block; margin-bottom: 5px; }
+        .order-date { font-size: 0.8rem; color: var(--text-dim); display: flex; align-items: center; gap: 6px; }
+        
+        .status-badge {
+            background: rgba(34, 197, 94, 0.1); color: var(--success);
+            padding: 6px 14px; border-radius: 30px; font-size: 0.7rem;
+            font-weight: 800; border: 1px solid rgba(34, 197, 94, 0.2);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .order-details-box { background: var(--bg); border-radius: 12px; padding: 20px; margin-top: 15px; }
+        .shipping-info { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+
         .order-item {
-            display: flex; justify-content: space-between; padding: 8px 0;
-            font-size: 0.95rem; border-bottom: 1px dashed var(--border);
+            display: flex; justify-content: space-between; padding: 10px 0;
+            font-size: 0.9rem; border-bottom: 1px solid rgba(0,0,0,0.05);
         }
-        .order-total {
-            text-align: right; margin-top: 15px; font-size: 1.2rem; font-weight: 800;
-            color: var(--primary);
+        [data-theme="dark"] .order-item { border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .order-item:last-child { border-bottom: none; }
+        
+        .item-name { font-weight: 500; }
+        .item-qty { color: var(--text-dim); font-size: 0.8rem; margin-left: 8px; }
+
+        .order-footer {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border);
         }
-        .empty-state { text-align: center; padding: 60px; opacity: 0.5; }
+        
+        .order-total-label { color: var(--text-dim); font-size: 0.85rem; }
+        .order-total-val { font-size: 1.3rem; font-weight: 900; color: var(--primary); }
+
+        .empty-state {
+            text-align: center; padding: 100px 20px; background: var(--card);
+            border-radius: 20px; border: 1px dashed var(--border);
+        }
+        .empty-state i { font-size: 4rem; color: var(--border); margin-bottom: 20px; }
+
+        footer { margin-top: auto; padding-top: 40px; text-align: center; color: var(--text-dim); font-size: 0.8rem; }
     </style>
 </head>
 <body>
 
     <nav>
-        <div class="brand" onclick="location.href='index.html'" style="cursor:pointer">TECH NOVA</div>
-        <div style="display:flex; gap:20px; align-items:center;">
-            <span id="user-tag" style="font-size:0.8rem; font-weight:600; opacity:0.7;"></span>
-            <a href="index.html" style="text-decoration:none; color:var(--text); font-weight:600;">Home</a>
+        <div class="brand" onclick="location.href='index.html'">TECH NOVA</div>
+        <div style="display:flex; gap:25px; align-items:center;">
+            <span id="user-tag" style="font-size:0.75rem; font-weight:700; color: var(--text-dim); background: var(--bg); padding: 5px 12px; border-radius: 20px;"></span>
+            <a href="index.html" style="text-decoration:none; color:var(--text); font-weight:600; font-size: 0.9rem;">
+                <i class="fas fa-home"></i> Home
+            </a>
         </div>
     </nav>
 
     <div class="orders-wrapper">
-        <h2 style="margin-bottom:30px;">Order History</h2>
-        <div id="history-list"></div>
-    </div>
-
-  <script src="api.js"></script>
-<script>
-    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
-    const activeUser = localStorage.getItem('activeUser') || "Guest";
-    document.getElementById('user-tag').innerText = "Logged in: " + activeUser;
-
-    async function renderOrders() {
-        const container = document.getElementById('history-list');
+        <div class="page-title">
+            <i class="fas fa-history fa-2x"></i>
+            <h2>Order History</h2>
+        </div>
         
-        try {
-            const orders = await fetchOrders();
+        <div id="history-list">
+        </div>
+    </div>
 
-            if (orders.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="fas fa-box-open" style="font-size:3rem; margin-bottom:15px;"></i>
-                        <h3>No orders found.</h3>
-                        <p>Start shopping to see your history here!</p>
-                    </div>`;
-                return;
-            }
+    <footer>
+        <div style="padding-bottom: 40px;">
+            © 2026 TechNova Store • All Rights Reserved
+        </div>
+    </footer>
 
-            container.innerHTML = orders.map(order => `
-                <div class="order-card">
-                    <div class="order-header">
-                        <div>
-                            <span class="order-id">Order ID: #${order.orderId}</span>
-                            <div class="order-date"><i class="far fa-calendar-alt"></i> ${new Date(order.createdAt).toLocaleString()}</div>
-                        </div>
-                        <span style="background:var(--primary); color:white; padding:4px 12px; border-radius:20px; font-size:0.7rem; font-weight:bold;">COMPLETED</span>
-                    </div>
-                    
-                    <div class="order-details">
-                        <p style="font-size:0.8rem; font-weight:700; margin-bottom:10px; opacity:0.8;">SHIPPING TO: ${order.customer}</p>
-                        ${order.items.map(item => `
-                            <div class="order-item">
-                                <span>${item.name} <span style="opacity:0.6;">x ${item.qty}</span></span>
-                                <span>₹${(item.price * item.qty).toLocaleString()}</span>
+    <script src="api.js"></script>
+    <script>
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+        const activeUser = localStorage.getItem('activeUser') || "Guest";
+        document.getElementById('user-tag').innerHTML = `<i class="fas fa-user-circle"></i> ${activeUser}`;
+
+        async function renderOrders() {
+            const container = document.getElementById('history-list');
+            
+            try {
+                const orders = await fetchOrders();
+
+                if (orders.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-box-open"></i>
+                            <h3>No orders yet</h3>
+                            <p style="color:var(--text-dim);">Your future gadgets will show up here once ordered.</p>
+                            <button onclick="location.href='index.html'" style="margin-top:20px; background:var(--primary); color:white; border:none; padding:12px 25px; border-radius:10px; cursor:pointer; font-weight:700;">Explore Products</button>
+                        </div>`;
+                    return;
+                }
+
+                container.innerHTML = orders.map(order => `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <span class="order-id">Order #${order.orderId}</span>
+                                <div class="order-date"><i class="far fa-calendar-alt"></i> ${new Date(order.createdAt).toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'})}</div>
                             </div>
-                        `).join('')}
-                    </div>
+                            <span class="status-badge">Order Placed</span>
+                        </div>
+                        
+                        <div class="shipping-info">
+                            <i class="fas fa-truck-loading"></i>
+                            <span>Sent to: <strong>${order.customer}</strong></span>
+                        </div>
 
-                    <div class="order-total">
-                        Total Amount: ₹${order.total.toLocaleString()}
-                    </div>
-                </div>
-            `).join('');
+                        <div class="order-details-box">
+                            ${order.items.map(item => `
+                                <div class="order-item">
+                                    <span class="item-name">${item.name} <span class="item-qty">× ${item.qty}</span></span>
+                                    <span style="font-weight:700;">₹${(item.price * item.qty).toLocaleString()}</span>
+                                </div>
+                            `).join('')}
+                        </div>
 
-        } catch(err) {
-            container.innerHTML = `<p style="text-align:center; opacity:0.5;">Failed to load orders.</p>`;
+                        <div class="order-footer">
+                            <div class="order-total-label">Total Amount Paid</div>
+                            <div class="order-total-val">₹${order.total.toLocaleString()}</div>
+                        </div>
+                    </div>
+                `).reverse().join(''); // Reversed to show newest orders at the top
+
+            } catch(err) {
+                container.innerHTML = `<p style="text-align:center; padding:50px; opacity:0.5;">Failed to load order history. Please refresh.</p>`;
+            }
         }
-    }
 
-    renderOrders();
-</script>
-
-<footer class="footer">
-  <div class="footer-container">
-
-    <div class="footer-col">
-      <h2>TechNova</h2>
-      <p>Your trusted tech store for gadgets, laptops, mobiles and accessories.</p>
-      
-    </div>
-
-    <div class="footer-col">
-      <h3>Shop</h3>
-      <a href="index.html">Home</a>
-      
-      <a href="cart.html">Cart</a>
-      <a href="orders.html">Orders</a>
-    </div>
-
-    <div class="footer-col">
-      <h3>Support</h3>
-      <a href="help.html">Help Center</a>
-<a href="returns.html">Returns</a>
-<a href="shipping.html">Shipping</a>
-<a href="privacy.html">Privacy Policy</a>
-    </div>
-
-    <div class="footer-col">
-      <h3>Contact</h3>
-      <p>Email: support@technova.com</p>
-      <p>Phone: +91 98765 43210</p>
-      <p>Bangalore, India</p>
-    </div>
-
-  </div>
-
-  <div class="footer-bottom">
-    © 2026 TechNova Store • All Rights Reserved
-  </div>
-</footer>
-
+        renderOrders();
+    </script>
 </body>
 </html>

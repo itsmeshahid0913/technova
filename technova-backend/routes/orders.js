@@ -38,7 +38,8 @@ router.post('/place', async (req, res) => {
             status: 'COMPLETED'
         });
 
-        await Cart.findOneAndUpdate({ userId: req.user.id }, { items: [] });
+        // The cart clearing logic has been commented out to keep items in the cart
+        // await Cart.findOneAndUpdate({ userId: req.user.id }, { items: [] });
 
         res.status(201).json(order);
     } catch (err) {

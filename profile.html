@@ -5,101 +5,154 @@
     <title>Tech Nova | My Profile</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
     <style>
-        .profile-wrapper { max-width: 600px; margin: 40px auto; padding: 0 5%; }
+        /* Light Theme (Default) */
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --primary: #3b82f6;
+            --text: #0f172a;
+            --text-dim: #64748b;
+            --border: #e2e8f0;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --shadow: rgba(0,0,0,0.05);
+        }
+
+        /* Dark Theme Override */
+        [data-theme="dark"] {
+            --bg: #0b0e14;
+            --card: #151a24;
+            --primary: #3b82f6;
+            --text: #ffffff;
+            --text-dim: #94a3b8;
+            --border: #262d3d;
+            --danger: #ef4444;
+            --success: #22c55e;
+            --shadow: rgba(0,0,0,0.3);
+        }
+
+        body {
+            margin: 0; background: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif; min-height: 100vh;
+            display: flex; flex-direction: column;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        nav {
+            padding: 15px 5%; display: flex; justify-content: space-between;
+            align-items: center; background: var(--card); border-bottom: 1px solid var(--border);
+        }
+        .brand { font-weight: 900; color: var(--primary); font-size: 1.2rem; cursor: pointer; }
+
+        .profile-wrapper { max-width: 550px; margin: 40px auto; padding: 0 20px; width: 100%; box-sizing: border-box; }
+
         .profile-card {
             background: var(--card); border: 1px solid var(--border);
-            border-radius: 20px; padding: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-radius: 24px; padding: 40px;
+            box-shadow: 0 20px 40px var(--shadow);
+            text-align: center;
         }
+
+        /* --- Avatar Design --- */
         .avatar {
-            width: 90px; height: 90px; border-radius: 50%;
-            background: var(--primary); display: flex; align-items: center;
-            justify-content: center; font-size: 2.5rem; color: white;
-            font-weight: 800; margin: 0 auto 20px;
+            width: 100px; height: 100px; border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #1e40af);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; color: white; font-weight: 900;
+            margin: 0 auto 20px; border: 4px solid var(--border);
         }
-        .profile-name {
-            text-align: center; font-size: 1.5rem;
-            font-weight: 800; margin-bottom: 5px;
-        }
-        .profile-tag {
-            text-align: center; font-size: 0.85rem;
-            opacity: 0.5; margin-bottom: 30px;
-        }
+
+        .profile-name { font-size: 1.8rem; font-weight: 900; margin-bottom: 5px; }
+        .profile-tag { font-size: 0.85rem; color: var(--text-dim); margin-bottom: 35px; letter-spacing: 1px; }
+
+        /* --- Stats Grid --- */
         .stats-grid {
             display: grid; grid-template-columns: 1fr 1fr;
-            gap: 15px; margin-bottom: 30px;
+            gap: 20px; margin-bottom: 40px;
         }
         .stat-card {
             background: var(--bg); border: 1px solid var(--border);
-            border-radius: 12px; padding: 20px; text-align: center;
+            border-radius: 16px; padding: 20px; transition: 0.3s;
         }
-        .stat-card h3 { font-size: 1.8rem; color: var(--primary); font-weight: 900; }
-        .stat-card p { font-size: 0.8rem; opacity: 0.6; margin-top: 5px; }
+        .stat-card:hover { border-color: var(--primary); }
+        .stat-card h3 { font-size: 1.5rem; color: var(--primary); font-weight: 900; margin: 0; }
+        .stat-card p { font-size: 0.75rem; color: var(--text-dim); margin-top: 5px; text-transform: uppercase; font-weight: 700; }
 
+        /* --- Form Section --- */
         .section-title {
-            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 1px; opacity: 0.5; margin-bottom: 15px;
+            font-size: 0.8rem; font-weight: 800; color: var(--primary);
+            text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 25px;
+            text-align: left; display: flex; align-items: center; gap: 10px;
         }
-        .form-group { margin-bottom: 20px; }
-        .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 8px; }
-        .form-group input {
-            width: 100%; padding: 12px; border: 1px solid var(--border);
-            border-radius: 10px; background: var(--bg); color: var(--text);
-            font-size: 0.95rem; box-sizing: border-box;
-        }
-        .form-group input:focus { border-color: var(--primary); outline: none; }
+        .section-title::after { content: ""; flex: 1; height: 1px; background: var(--border); }
 
+        .form-group { margin-bottom: 20px; text-align: left; }
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 8px; color: var(--text-dim); }
+        .form-group input {
+            width: 100%; padding: 14px; border: 1px solid var(--border);
+            border-radius: 12px; background: var(--bg); color: var(--text);
+            font-size: 0.95rem; box-sizing: border-box; transition: 0.3s;
+        }
+        .form-group input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
+
+        /* --- Buttons --- */
         .btn-save {
             background: var(--primary); color: white; border: none;
-            width: 100%; padding: 14px; border-radius: 10px;
-            font-weight: 700; font-size: 1rem; cursor: pointer;
+            width: 100%; padding: 16px; border-radius: 12px;
+            font-weight: 800; font-size: 1rem; cursor: pointer;
+            transition: 0.3s; margin-top: 10px;
         }
-        .btn-save:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        .btn-save:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
         .btn-logout-full {
-            background: #fee2e2; color: #ef4444; border: none;
-            width: 100%; padding: 14px; border-radius: 10px;
-            font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 10px;
+            background: rgba(239, 68, 68, 0.1); color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            width: 100%; padding: 14px; border-radius: 12px;
+            font-weight: 700; font-size: 0.9rem; cursor: pointer;
+            margin-top: 15px; transition: 0.3s;
         }
-        .success-msg { color: #22c55e; font-size: 0.85rem; text-align: center; display: none; margin-top: 10px; }
-        .error-msg { color: #ef4444; font-size: 0.85rem; text-align: center; display: none; margin-top: 10px; }
+        .btn-logout-full:hover { background: var(--danger); color: white; }
+
+        .success-msg { color: var(--success); font-size: 0.85rem; margin: 15px 0; font-weight: 600; display: none; }
+        .error-msg { color: var(--danger); font-size: 0.85rem; margin: 15px 0; font-weight: 600; display: none; }
+
+        footer { margin-top: auto; padding-bottom: 40px; text-align: center; color: var(--text-dim); font-size: 0.8rem; }
     </style>
 </head>
 <body>
     <nav>
-        <div class="brand" onclick="location.href='index.html'" style="cursor:pointer">TECH NOVA</div>
-        <div style="display:flex; gap:20px; align-items:center;">
-            <a href="index.html" style="text-decoration:none; color:var(--text); font-weight:600;">← Back to Store</a>
-            <a href="cart.html" style="position:relative; color:var(--text);">
+        <div class="brand" onclick="location.href='index.html'">TECH NOVA</div>
+        <div style="display:flex; gap:25px; align-items:center;">
+            <a href="index.html" style="text-decoration:none; color:var(--text-dim); font-weight:600; font-size:0.9rem;">
+                <i class="fas fa-arrow-left"></i> Store
+            </a>
+            <a href="cart.html" style="position:relative; color:var(--text); font-size:1.1rem;">
                 <i class="fas fa-shopping-bag"></i>
-                <span id="cart-count" style="position:absolute; top:-10px; right:-10px; background:red; color:white; border-radius:50%; padding:2px 6px; font-size:10px;">0</span>
+                <span id="cart-count" style="position:absolute; top:-8px; right:-10px; background:var(--danger); color:white; border-radius:50%; padding:2px 6px; font-size:10px; font-weight:900;">0</span>
             </a>
         </div>
     </nav>
 
     <div class="profile-wrapper">
         <div class="profile-card">
-
-            <!-- Avatar + Name -->
             <div class="avatar" id="avatar-initials">?</div>
-            <div class="profile-name" id="profile-username">Loading...</div>
-            <div class="profile-tag">Tech Nova Member</div>
+            <div class="profile-name" id="profile-username">User</div>
+            <div class="profile-tag"><i class="fas fa-shield-check"></i> Verified Member</div>
 
-            <!-- Stats -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <h3 id="total-orders">0</h3>
-                    <p>Total Orders</p>
+                    <p>Orders</p>
                 </div>
                 <div class="stat-card">
                     <h3 id="total-spent">₹0</h3>
-                    <p>Total Spent</p>
+                    <p>Invested</p>
                 </div>
             </div>
 
-            <!-- Change Password -->
-            <div class="section-title">Change Password</div>
+            <div class="section-title">Security Settings</div>
+            
             <div class="form-group">
                 <label>Current Password</label>
                 <input type="password" id="currentPass" placeholder="••••••••">
@@ -113,20 +166,24 @@
                 <input type="password" id="confirmPass" placeholder="••••••••">
             </div>
 
-            <div id="successMsg" class="success-msg">✅ Password changed successfully!</div>
+            <div id="successMsg" class="success-msg">✅ Password updated successfully!</div>
             <div id="errorMsg" class="error-msg"></div>
 
             <button class="btn-save" onclick="changePassword()">
-                <i class="fas fa-lock"></i> Update Password
+                Update Password
             </button>
+            
             <button class="btn-logout-full" onclick="logoutUser()">
                 <i class="fas fa-sign-out-alt"></i> Logout
             </button>
         </div>
     </div>
 
+    <footer>
+        © 2026 TechNova Store • All Rights Reserved
+    </footer>
+
     <script src="api.js"></script>
-    <script src="script.js"></script>
     <script>
         document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
 
@@ -134,7 +191,6 @@
         document.getElementById('profile-username').innerText = username;
         document.getElementById('avatar-initials').innerText = username.charAt(0).toUpperCase();
 
-        // Load stats
         async function loadStats() {
             try {
                 const orders = await fetchOrders();
@@ -142,11 +198,10 @@
                 document.getElementById('total-orders').innerText = orders.length;
                 document.getElementById('total-spent').innerText = '₹' + totalSpent.toLocaleString();
             } catch(err) {
-                console.log('Could not load stats');
+                console.log('Stats unavailable');
             }
         }
 
-        // Change password
         async function changePassword() {
             const currentPass = document.getElementById('currentPass').value;
             const newPass     = document.getElementById('newPass').value;
@@ -158,17 +213,12 @@
             errorEl.style.display   = 'none';
 
             if (!currentPass || !newPass || !confirmPass) {
-                errorEl.innerText = 'Please fill all fields!';
+                errorEl.innerText = 'All fields are required.';
                 errorEl.style.display = 'block';
                 return;
             }
             if (newPass !== confirmPass) {
-                errorEl.innerText = 'New passwords do not match!';
-                errorEl.style.display = 'block';
-                return;
-            }
-            if (newPass.length < 4) {
-                errorEl.innerText = 'Password must be at least 4 characters!';
+                errorEl.innerText = 'New passwords do not match.';
                 errorEl.style.display = 'block';
                 return;
             }
@@ -195,47 +245,14 @@
             }
         }
 
+        // New Logout Function
+        function logoutUser() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('activeUser');
+            window.location.href = 'login.html';
+        }
+
         loadStats();
     </script>
-
-    <footer class="footer">
-  <div class="footer-container">
-
-    <div class="footer-col">
-      <h2>TechNova</h2>
-      <p>Your trusted tech store for gadgets, laptops, mobiles and accessories.</p>
-      
-    </div>
-
-    <div class="footer-col">
-      <h3>Shop</h3>
-      <a href="index.html">Home</a>
-      
-      <a href="cart.html">Cart</a>
-      <a href="orders.html">Orders</a>
-    </div>
-
-    <div class="footer-col">
-      <h3>Support</h3>
-      <a href="help.html">Help Center</a>
-<a href="returns.html">Returns</a>
-<a href="shipping.html">Shipping</a>
-<a href="privacy.html">Privacy Policy</a>
-    </div>
-
-    <div class="footer-col">
-      <h3>Contact</h3>
-      <p>Email: support@technova.com</p>
-      <p>Phone: +91 98765 43210</p>
-      <p>Bangalore, India</p>
-    </div>
-
-  </div>
-
-  <div class="footer-bottom">
-    © 2026 TechNova Store • All Rights Reserved
-  </div>
-</footer>
-
 </body>
 </html>

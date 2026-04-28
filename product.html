@@ -2,130 +2,217 @@
 <html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <title>Tech Nova | Product</title>
+    <title>Tech Nova | Product Details</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="style.css">
     <style>
+        /* Light Theme (Default) */
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --primary: #3b82f6;
+            --text: #0f172a;
+            --text-dim: #64748b;
+            --border: #e2e8f0;
+            --success: #22c55e;
+            --shadow: rgba(0,0,0,0.05);
+        }
+
+        /* Dark Theme Override */
+        [data-theme="dark"] {
+            --bg: #0b0e14;
+            --card: #151a24;
+            --primary: #3b82f6;
+            --text: #ffffff;
+            --text-dim: #94a3b8;
+            --border: #262d3d;
+            --success: #22c55e;
+            --shadow: rgba(0,0,0,0.3);
+        }
+
+        body {
+            margin: 0; background: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif; min-height: 100vh;
+            display: flex; flex-direction: column;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        nav {
+            padding: 15px 5%; display: flex; justify-content: space-between;
+            align-items: center; background: var(--card); border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .brand { font-weight: 900; color: var(--primary); font-size: 1.2rem; cursor: pointer; }
+
         .product-detail {
-            max-width: 900px; margin: 40px auto; padding: 0 5%;
-            display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+            max-width: 1100px; margin: 40px auto; padding: 0 20px;
+            display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px;
         }
+
+        /* --- Image Gallery Box --- */
         .product-img-box {
-            background: var(--card); border-radius: 20px;
-            border: 1px solid var(--border); padding: 30px;
+            background: var(--card); border-radius: 30px;
+            border: 1px solid var(--border); padding: 50px;
             display: flex; align-items: center; justify-content: center;
+            position: sticky; top: 100px; height: fit-content;
+            box-shadow: 0 20px 40px var(--shadow);
         }
-        .product-img-box img { width: 100%; max-height: 350px; object-fit: contain; }
-        .product-info { display: flex; flex-direction: column; justify-content: center; gap: 20px; }
+        .product-img-box img { width: 100%; max-height: 450px; object-fit: contain; transition: 0.5s; }
+        .product-img-box:hover img { transform: scale(1.05); }
+
+        /* --- Info Section --- */
+        .product-info { display: flex; flex-direction: column; gap: 25px; }
+        
+        .badge-row { display: flex; gap: 10px; align-items: center; }
         .product-cat {
-            background: var(--primary); color: white;
-            padding: 4px 12px; border-radius: 20px;
-            font-size: 0.75rem; font-weight: 700;
-            display: inline-block; width: fit-content;
+            background: rgba(59, 130, 246, 0.1); color: var(--primary);
+            padding: 6px 16px; border-radius: 30px; border: 1px solid rgba(59, 130, 246, 0.2);
+            font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
         }
-        .product-name { font-size: 1.8rem; font-weight: 800; }
-        .product-price { font-size: 2rem; font-weight: 900; color: var(--primary); }
-        .original-price { font-size: 1rem; text-decoration: line-through; opacity: 0.5; margin-left: 10px; }
         .discount-badge {
-            background: #22c55e; color: white;
-            padding: 4px 12px; border-radius: 20px;
-            font-size: 0.75rem; font-weight: 700;
-            display: inline-block; width: fit-content;
+            background: var(--success); color: white;
+            padding: 6px 16px; border-radius: 30px;
+            font-size: 0.75rem; font-weight: 800;
         }
-        .btn-group { display: flex; gap: 15px; margin-top: 10px; }
+
+        .product-name { font-size: 2.8rem; font-weight: 900; line-height: 1.1; margin: 0; }
+        
+        .price-row { display: flex; align-items: baseline; gap: 15px; }
+        .product-price { font-size: 2.5rem; font-weight: 900; color: var(--primary); }
+        .original-price { font-size: 1.2rem; text-decoration: line-through; color: var(--text-dim); }
+
+        .description { color: var(--text-dim); line-height: 1.8; font-size: 1.05rem; }
+
+        /* --- UI Extras --- */
+        .feature-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+            margin: 20px 0; padding: 20px 0; border-top: 1px solid var(--border);
+        }
+        .feature-item { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: var(--text-dim); }
+        .feature-item i { color: var(--success); font-size: 1rem; }
+
+        /* --- Buttons --- */
+        .btn-group { display: flex; gap: 15px; margin-top: 20px; }
         .btn-buynow {
             background: var(--primary); color: white; border: none;
-            padding: 14px 30px; border-radius: 10px;
-            font-weight: 700; font-size: 1rem; cursor: pointer; flex: 1;
+            padding: 18px 35px; border-radius: 15px;
+            font-weight: 800; font-size: 1.1rem; cursor: pointer; flex: 2;
+            transition: 0.3s; box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
         }
         .btn-addcart {
-            background: transparent; border: 2px solid var(--primary);
-            color: var(--primary); padding: 14px 30px; border-radius: 10px;
-            font-weight: 700; font-size: 1rem; cursor: pointer; flex: 1;
+            background: var(--bg); border: 2px solid var(--border);
+            color: var(--text); width: 70px; border-radius: 15px;
+            font-size: 1.2rem; cursor: pointer; flex: 0.5;
+            transition: 0.3s;
         }
-        .btn-buynow:hover { filter: brightness(1.1); transform: translateY(-2px); }
-        .btn-addcart:hover { background: var(--primary); color: white; }
+        .btn-buynow:hover { transform: translateY(-3px); filter: brightness(1.1); }
+        .btn-addcart:hover { border-color: var(--primary); color: var(--primary); }
 
-        @media (max-width: 600px) {
+        @media (max-width: 900px) {
             .product-detail { grid-template-columns: 1fr; }
+            .product-img-box { position: static; padding: 30px; }
+            .product-name { font-size: 2rem; }
+        }
+
+        #add-popup {
+            position: fixed; bottom: 30px; right: 30px; background: var(--success);
+            color: white; padding: 15px 30px; border-radius: 12px; font-weight: 700;
+            display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 2000;
         }
     </style>
 </head>
 <body>
+
     <nav>
-        <div class="brand" onclick="location.href='index.html'" style="cursor:pointer">TECH NOVA</div>
-        <div style="display:flex; gap:20px; align-items:center;">
-            <a href="index.html" style="text-decoration:none; color:var(--text); font-weight:600;">← Back to Store</a>
-            <a href="cart.html" style="position:relative; color:var(--text);">
+        <div class="brand" onclick="location.href='index.html'">TECH NOVA</div>
+        <div style="display:flex; gap:25px; align-items:center;">
+            <a href="index.html" style="text-decoration:none; color:var(--text-dim); font-weight:600; font-size: 0.9rem;">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+            <a href="cart.html" style="position:relative; color:var(--text); font-size: 1.2rem;">
                 <i class="fas fa-shopping-bag"></i>
-                <span id="cart-count" style="position:absolute; top:-10px; right:-10px; background:red; color:white; border-radius:50%; padding:2px 6px; font-size:10px;">0</span>
+                <span id="cart-count" style="position:absolute; top:-8px; right:-10px; background:#ef4444; color:white; border-radius:50%; padding:2px 6px; font-size:10px; font-weight:900;">0</span>
             </a>
         </div>
     </nav>
 
     <div class="product-detail" id="product-detail">
-        <div style="text-align:center; padding:80px; grid-column:1/-1; opacity:0.5;">
-            <i class="fas fa-spinner fa-spin" style="font-size:3rem;"></i>
-            <p>Loading product...</p>
+        <div style="text-align:center; padding:150px; grid-column:1/-1; opacity:0.3;">
+            <i class="fas fa-circle-notch fa-spin fa-3x"></i>
         </div>
     </div>
 
     <div id="add-popup"><i class="fas fa-check-circle"></i> Added to Cart!</div>
 
     <script src="api.js"></script>
-    <script src="script.js"></script>
     <script>
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+        
         const params = new URLSearchParams(window.location.search);
         const productId = params.get('id');
 
         if (!productId) window.location.href = 'index.html';
 
         async function loadProduct() {
-            const products = await fetchProducts();
-            const settings = await fetchSettings();
-            const p = products.find(x => x._id === productId);
+            try {
+                const products = await fetchProducts();
+                const settings = await fetchSettings();
+                const p = products.find(x => x._id === productId);
 
-            if (!p) {
-                window.location.href = 'index.html';
-                return;
+                if (!p) { window.location.href = 'index.html'; return; }
+
+                const discount = (p.price * settings.discountPercentage) / 100;
+                const finalPrice = settings.isSaleActive ? (p.price - discount) : p.price;
+
+                document.title = `Tech Nova | ${p.name}`;
+
+                document.getElementById('product-detail').innerHTML = `
+                    <div class="product-img-box">
+                        <img src="${p.img}" alt="${p.name}">
+                    </div>
+                    <div class="product-info">
+                        <div class="badge-row">
+                            <span class="product-cat">${p.cat}</span>
+                            ${settings.isSaleActive ? `<span class="discount-badge">Save ${settings.discountPercentage}%</span>` : ''}
+                        </div>
+                        
+                        <h1 class="product-name">${p.name}</h1>
+                        
+                        <div class="price-row">
+                            <span class="product-price">₹${finalPrice.toLocaleString()}</span>
+                            ${settings.isSaleActive ? `<span class="original-price">₹${p.price.toLocaleString()}</span>` : ''}
+                        </div>
+
+                        <p class="description">${p.description || "Experience the next level of technology with our premium selection. Engineered for performance and designed for style."}</p>
+                        
+                        <div class="feature-grid">
+                            <div class="feature-item"><i class="fas fa-shield-check"></i> 1 Year Warranty</div>
+                            <div class="feature-item"><i class="fas fa-truck"></i> Fast Delivery</div>
+                            <div class="feature-item"><i class="fas fa-undo"></i> 7 Day Returns</div>
+                            <div class="feature-item"><i class="fas fa-lock"></i> Secure Payment</div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn-buynow" onclick="quickBuyProduct('${p._id}', ${p.price})">
+                                Buy Now
+                            </button>
+                            <button class="btn-addcart" title="Add to Cart" onclick="addToCartProduct('${p._id}', '${p.name}', ${finalPrice}, '${p.img}')">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            } catch (e) {
+                console.error(e);
             }
-
-            const discount = (p.price * settings.discountPercentage) / 100;
-            const finalPrice = settings.isSaleActive ? (p.price - discount) : p.price;
-
-            document.title = `Tech Nova | ${p.name}`;
-
-            document.getElementById('product-detail').innerHTML = `
-                <div class="product-img-box">
-                    <img src="${p.img}" alt="${p.name}">
-                </div>
-                <div class="product-info">
-                    <span class="product-cat">${p.cat}</span>
-                    <h1 class="product-name">${p.name}</h1>
-                    <div>
-                        <span class="product-price">₹${finalPrice.toLocaleString()}</span>
-                        ${settings.isSaleActive ? `<span class="original-price">₹${p.price.toLocaleString()}</span>` : ''}
-                    </div>
-                    ${settings.isSaleActive ? `<span class="discount-badge">${settings.discountPercentage}% OFF - Limited Time!</span>` : ''}
-                    <p style="opacity:0.7; line-height:1.7; font-size:0.95rem;">${p.description}</p>
-                    <div class="btn-group">
-                        <button class="btn-buynow" onclick="quickBuyProduct('${p._id}', ${p.price})">
-                            <i class="fas fa-bolt"></i> Buy Now
-                        </button>
-                        <button class="btn-addcart" onclick="addToCartProduct('${p._id}', '${p.name}', ${finalPrice}, '${p.img}')">
-                            <i class="fas fa-cart-plus"></i> Add to Cart
-                        </button>
-                    </div>
-                </div>
-            `;
         }
 
         async function addToCartProduct(productId, name, price, img) {
             try {
                 await addToCart({ productId, name, price, img });
-                updateNavbar();
-                showPopup();
+                const p = document.getElementById('add-popup');
+                p.style.display = 'block';
+                setTimeout(() => { p.style.display = 'none'; }, 2500);
             } catch(err) {
                 alert('Please login first!');
             }
@@ -143,45 +230,5 @@
 
         loadProduct();
     </script>
-
-    <footer class="footer">
-  <div class="footer-container">
-
-    <div class="footer-col">
-      <h2>TechNova</h2>
-      <p>Your trusted tech store for gadgets, laptops, mobiles and accessories.</p>
-      
-    </div>
-
-    <div class="footer-col">
-      <h3>Shop</h3>
-      <a href="index.html">Home</a>
-      
-      <a href="cart.html">Cart</a>
-      <a href="orders.html">Orders</a>
-    </div>
-
-    <div class="footer-col">
-      <h3>Support</h3>
-      <a href="help.html">Help Center</a>
-<a href="returns.html">Returns</a>
-<a href="shipping.html">Shipping</a>
-<a href="privacy.html">Privacy Policy</a>
-    </div>
-
-    <div class="footer-col">
-      <h3>Contact</h3>
-      <p>Email: support@technova.com</p>
-      <p>Phone: +91 98765 43210</p>
-      <p>Bangalore, India</p>
-    </div>
-
-  </div>
-
-  <div class="footer-bottom">
-    © 2026 TechNova Store • All Rights Reserved
-  </div>
-</footer>
-
 </body>
 </html>

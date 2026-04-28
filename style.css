@@ -115,26 +115,91 @@ nav {
 }
 
 
+/* ===== Mini Header (Matches TechNova UI) ===== */
 .mini-header{
-  background:#2563eb;
-  padding:15px 40px;
+  background: linear-gradient(90deg,#2563eb,#1d4ed8);
+  padding:18px 60px;
   display:flex;
   justify-content:space-between;
   align-items:center;
+  box-shadow:0 4px 15px rgba(0,0,0,0.15);
+  position:sticky;
+  top:0;
+  z-index:100;
 }
 
 .logo{
   color:white;
-  font-size:22px;
-  font-weight:bold;
+  font-size:24px;
+  font-weight:800;
+  letter-spacing:1px;
   text-decoration:none;
+  transition:0.3s;
 }
 
+.logo:hover{
+  transform:scale(1.05);
+}
+
+/* Home button */
 .home-btn{
   background:white;
   color:#2563eb;
-  padding:8px 16px;
-  border-radius:6px;
+  padding:10px 22px;
+  border-radius:30px;
   text-decoration:none;
-  font-weight:bold;
+  font-weight:700;
+  transition:0.3s;
+  box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
+
+.home-btn:hover{
+  background:#eff6ff;
+  transform:translateY(-2px);
+}
+
+/* ===== Page Content Style ===== */
+body{
+  margin:0;
+  font-family:Arial, Helvetica, sans-serif;
+  background:#f8fafc;
+}
+
+.container{
+  max-width:900px;
+  margin:60px auto;
+  padding:0 20px;
+  text-align:center;
+}
+
+.container h1{
+  font-size:38px;
+  color:#1e293b;
+  margin-bottom:20px;
+}
+
+.container p{
+  font-size:18px;
+  color:#64748b;
+  line-height:1.6;
+}
+
+/* ===== Mobile Responsive ===== */
+@media(max-width:768px){
+  .mini-header{
+    padding:15px 20px;
+  }
+
+  .logo{
+    font-size:20px;
+  }
+
+  .home-btn{
+    padding:8px 16px;
+    font-size:14px;
+  }
+
+  .container h1{
+    font-size:28px;
+  }
 }

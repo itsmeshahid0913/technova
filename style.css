@@ -115,91 +115,75 @@ nav {
 }
 
 
-/* ===== Mini Header (Matches TechNova UI) ===== */
+/* ===== Premium Mini Header ===== */
 .mini-header{
-  background: linear-gradient(90deg,#2563eb,#1d4ed8);
-  padding:18px 60px;
+  height:70px;
+  padding:0 60px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  box-shadow:0 4px 15px rgba(0,0,0,0.15);
+  background:#0f172a;
   position:sticky;
   top:0;
-  z-index:100;
+  z-index:1000;
 }
 
+/* Logo */
 .logo{
   color:white;
-  font-size:24px;
-  font-weight:800;
+  font-size:26px;
+  font-weight:900;
   letter-spacing:1px;
   text-decoration:none;
-  transition:0.3s;
-}
-
-.logo:hover{
-  transform:scale(1.05);
 }
 
 /* Home button */
 .home-btn{
-  background:white;
-  color:#2563eb;
-  padding:10px 22px;
-  border-radius:30px;
+  color:white;
   text-decoration:none;
-  font-weight:700;
-  transition:0.3s;
-  box-shadow:0 4px 10px rgba(0,0,0,0.15);
+  font-weight:600;
+  padding:10px 20px;
+  border:1px solid rgba(255,255,255,0.4);
+  border-radius:6px;
+  transition:0.25s;
 }
 
 .home-btn:hover{
-  background:#eff6ff;
-  transform:translateY(-2px);
+  background:#2563eb;
+  border-color:#2563eb;
 }
 
-/* ===== Page Content Style ===== */
+/* ===== Page content styling ===== */
 body{
   margin:0;
-  font-family:Arial, Helvetica, sans-serif;
-  background:#f8fafc;
+  font-family: 'Segoe UI', sans-serif;
+  background:#f1f5f9;
 }
 
 .container{
   max-width:900px;
-  margin:60px auto;
+  margin:70px auto;
   padding:0 20px;
-  text-align:center;
 }
 
 .container h1{
-  font-size:38px;
-  color:#1e293b;
-  margin-bottom:20px;
+  font-size:42px;
+  color:#0f172a;
+  margin-bottom:15px;
 }
 
 .container p{
   font-size:18px;
-  color:#64748b;
-  line-height:1.6;
+  color:#475569;
+  line-height:1.7;
 }
 
-/* ===== Mobile Responsive ===== */
+/* ===== Mobile ===== */
 @media(max-width:768px){
   .mini-header{
-    padding:15px 20px;
+    padding:0 20px;
   }
-
-  .logo{
-    font-size:20px;
-  }
-
-  .home-btn{
-    padding:8px 16px;
-    font-size:14px;
-  }
-
-  .container h1{
-    font-size:28px;
-  }
+  .logo{font-size:22px;}
+  .home-btn{padding:8px 14px;}
+  .container h1{font-size:30px;}
 }

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Tech Nova | Product</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .product-detail {
+            max-width: 900px; margin: 40px auto; padding: 0 5%;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
+        }
+        .product-img-box {
+            background: var(--card); border-radius: 20px;
+            border: 1px solid var(--border); padding: 30px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .product-img-box img { width: 100%; max-height: 350px; object-fit: contain; }
+        .product-info { display: flex; flex-direction: column; justify-content: center; gap: 20px; }
+        .product-cat {
+            background: var(--primary); color: white;
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 700;
+            display: inline-block; width: fit-content;
+        }
+        .product-name { font-size: 1.8rem; font-weight: 800; }
+        .product-price { font-size: 2rem; font-weight: 900; color: var(--primary); }
+        .original-price { font-size: 1rem; text-decoration: line-through; opacity: 0.5; margin-left: 10px; }
+        .discount-badge {
+            background: #22c55e; color: white;
+            padding: 4px 12px; border-radius: 20px;
+            font-size: 0.75rem; font-weight: 700;
+            display: inline-block; width: fit-content;
+        }
+        .btn-group { display: flex; gap: 15px; margin-top: 10px; }
+        .btn-buynow {
+            background: var(--primary); color: white; border: none;
+            padding: 14px 30px; border-radius: 10px;
+            font-weight: 700; font-size: 1rem; cursor: pointer; flex: 1;
+        }
+        .btn-addcart {
+            background: transparent; border: 2px solid var(--primary);
+            color: var(--primary); padding: 14px 30px; border-radius: 10px;
+            font-weight: 700; font-size: 1rem; cursor: pointer; flex: 1;
+        }
+        .btn-buynow:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        .btn-addcart:hover { background: var(--primary); color: white; }
+
+        @media (max-width: 600px) {
+            .product-detail { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="brand" onclick="location.href='index.html'" style="cursor:pointer">TECH NOVA</div>
+        <div style="display:flex; gap:20px; align-items:center;">
+            <a href="index.html" style="text-decoration:none; color:var(--text); font-weight:600;">← Back to Store</a>
+            <a href="cart.html" style="position:relative; color:var(--text);">
+                <i class="fas fa-shopping-bag"></i>
+                <span id="cart-count" style="position:absolute; top:-10px; right:-10px; background:red; color:white; border-radius:50%; padding:2px 6px; font-size:10px;">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="product-detail" id="product-detail">
+        <div style="text-align:center; padding:80px; grid-column:1/-1; opacity:0.5;">
+            <i class="fas fa-spinner fa-spin" style="font-size:3rem;"></i>
+            <p>Loading product...</p>
+        </div>
+    </div>
+
+    <div id="add-popup"><i class="fas fa-check-circle"></i> Added to Cart!</div>
+
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const productId = params.get('id');
+
+        if (!productId) window.location.href = 'index.html';
+
+        async function loadProduct() {
+            const products = await fetchProducts();
+            const settings = await fetchSettings();
+            const p = products.find(x => x._id === productId);
+
+            if (!p) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            const discount = (p.price * settings.discountPercentage) / 100;
+            const finalPrice = settings.isSaleActive ? (p.price - discount) : p.price;
+
+            document.title = `Tech Nova | ${p.name}`;
+
+            document.getElementById('product-detail').innerHTML = `
+                <div class="product-img-box">
+                    <img src="${p.img}" alt="${p.name}">
+                </div>
+                <div class="product-info">
+                    <span class="product-cat">${p.cat}</span>
+                    <h1 class="product-name">${p.name}</h1>
+                    <div>
+                        <span class="product-price">₹${finalPrice.toLocaleString()}</span>
+                        ${settings.isSaleActive ? `<span class="original-price">₹${p.price.toLocaleString()}</span>` : ''}
+                    </div>
+                    ${settings.isSaleActive ? `<span class="discount-badge">${settings.discountPercentage}% OFF - Limited Time!</span>` : ''}
+                    <p style="opacity:0.7; line-height:1.7; font-size:0.95rem;">${p.description}</p>
+                    <div class="btn-group">
+                        <button class="btn-buynow" onclick="quickBuyProduct('${p._id}', ${p.price})">
+                            <i class="fas fa-bolt"></i> Buy Now
+                        </button>
+                        <button class="btn-addcart" onclick="addToCartProduct('${p._id}', '${p.name}', ${finalPrice}, '${p.img}')">
+                            <i class="fas fa-cart-plus"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function addToCartProduct(productId, name, price, img) {
+            try {
+                await addToCart({ productId, name, price, img });
+                updateNavbar();
+                showPopup();
+            } catch(err) {
+                alert('Please login first!');
+            }
+        }
+
+        async function quickBuyProduct(id, price) {
+            const products = await fetchProducts();
+            const settings = await fetchSettings();
+            const product = products.find(p => p._id === id);
+            const discount = (product.price * settings.discountPercentage) / 100;
+            const currentPrice = settings.isSaleActive ? (product.price - discount) : product.price;
+            localStorage.setItem('temp_buy', JSON.stringify([{...product, price: currentPrice, qty: 1}]));
+            window.location.href = 'checkout.html';
+        }
+
+        loadProduct();
+    </script>
+</body>
+</html>

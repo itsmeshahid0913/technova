@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Tech Nova | My Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-wrapper { max-width: 600px; margin: 40px auto; padding: 0 5%; }
+        .profile-card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .avatar {
+            width: 90px; height: 90px; border-radius: 50%;
+            background: var(--primary); display: flex; align-items: center;
+            justify-content: center; font-size: 2.5rem; color: white;
+            font-weight: 800; margin: 0 auto 20px;
+        }
+        .profile-name {
+            text-align: center; font-size: 1.5rem;
+            font-weight: 800; margin-bottom: 5px;
+        }
+        .profile-tag {
+            text-align: center; font-size: 0.85rem;
+            opacity: 0.5; margin-bottom: 30px;
+        }
+        .stats-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 15px; margin-bottom: 30px;
+        }
+        .stat-card {
+            background: var(--bg); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px; text-align: center;
+        }
+        .stat-card h3 { font-size: 1.8rem; color: var(--primary); font-weight: 900; }
+        .stat-card p { font-size: 0.8rem; opacity: 0.6; margin-top: 5px; }
+
+        .section-title {
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 1px; opacity: 0.5; margin-bottom: 15px;
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 8px; }
+        .form-group input {
+            width: 100%; padding: 12px; border: 1px solid var(--border);
+            border-radius: 10px; background: var(--bg); color: var(--text);
+            font-size: 0.95rem; box-sizing: border-box;
+        }
+        .form-group input:focus { border-color: var(--primary); outline: none; }
+
+        .btn-save {
+            background: var(--primary); color: white; border: none;
+            width: 100%; padding: 14px; border-radius: 10px;
+            font-weight: 700; font-size: 1rem; cursor: pointer;
+        }
+        .btn-save:hover { filter: brightness(1.1); transform: translateY(-2px); }
+        .btn-logout-full {
+            background: #fee2e2; color: #ef4444; border: none;
+            width: 100%; padding: 14px; border-radius: 10px;
+            font-weight: 700; font-size: 1rem; cursor: pointer; margin-top: 10px;
+        }
+        .success-msg { color: #22c55e; font-size: 0.85rem; text-align: center; display: none; margin-top: 10px; }
+        .error-msg { color: #ef4444; font-size: 0.85rem; text-align: center; display: none; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="brand" onclick="location.href='index.html'" style="cursor:pointer">TECH NOVA</div>
+        <div style="display:flex; gap:20px; align-items:center;">
+            <a href="index.html" style="text-decoration:none; color:var(--text); font-weight:600;">← Back to Store</a>
+            <a href="cart.html" style="position:relative; color:var(--text);">
+                <i class="fas fa-shopping-bag"></i>
+                <span id="cart-count" style="position:absolute; top:-10px; right:-10px; background:red; color:white; border-radius:50%; padding:2px 6px; font-size:10px;">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="profile-wrapper">
+        <div class="profile-card">
+
+            <!-- Avatar + Name -->
+            <div class="avatar" id="avatar-initials">?</div>
+            <div class="profile-name" id="profile-username">Loading...</div>
+            <div class="profile-tag">Tech Nova Member</div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3 id="total-orders">0</h3>
+                    <p>Total Orders</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="total-spent">₹0</h3>
+                    <p>Total Spent</p>
+                </div>
+            </div>
+
+            <!-- Change Password -->
+            <div class="section-title">Change Password</div>
+            <div class="form-group">
+                <label>Current Password</label>
+                <input type="password" id="currentPass" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+                <label>New Password</label>
+                <input type="password" id="newPass" placeholder="••••••••">
+            </div>
+            <div class="form-group">
+                <label>Confirm New Password</label>
+                <input type="password" id="confirmPass" placeholder="••••••••">
+            </div>
+
+            <div id="successMsg" class="success-msg">✅ Password changed successfully!</div>
+            <div id="errorMsg" class="error-msg"></div>
+
+            <button class="btn-save" onclick="changePassword()">
+                <i class="fas fa-lock"></i> Update Password
+            </button>
+            <button class="btn-logout-full" onclick="logoutUser()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+
+        const username = localStorage.getItem('activeUser') || 'Guest';
+        document.getElementById('profile-username').innerText = username;
+        document.getElementById('avatar-initials').innerText = username.charAt(0).toUpperCase();
+
+        // Load stats
+        async function loadStats() {
+            try {
+                const orders = await fetchOrders();
+                const totalSpent = orders.reduce((sum, o) => sum + o.total, 0);
+                document.getElementById('total-orders').innerText = orders.length;
+                document.getElementById('total-spent').innerText = '₹' + totalSpent.toLocaleString();
+            } catch(err) {
+                console.log('Could not load stats');
+            }
+        }
+
+        // Change password
+        async function changePassword() {
+            const currentPass = document.getElementById('currentPass').value;
+            const newPass     = document.getElementById('newPass').value;
+            const confirmPass = document.getElementById('confirmPass').value;
+            const successEl   = document.getElementById('successMsg');
+            const errorEl     = document.getElementById('errorMsg');
+
+            successEl.style.display = 'none';
+            errorEl.style.display   = 'none';
+
+            if (!currentPass || !newPass || !confirmPass) {
+                errorEl.innerText = 'Please fill all fields!';
+                errorEl.style.display = 'block';
+                return;
+            }
+            if (newPass !== confirmPass) {
+                errorEl.innerText = 'New passwords do not match!';
+                errorEl.style.display = 'block';
+                return;
+            }
+            if (newPass.length < 4) {
+                errorEl.innerText = 'Password must be at least 4 characters!';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            try {
+                const res = await fetch('http://localhost:5000/api/auth/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    },
+                    body: JSON.stringify({ currentPass, newPass })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message);
+
+                successEl.style.display = 'block';
+                document.getElementById('currentPass').value = '';
+                document.getElementById('newPass').value = '';
+                document.getElementById('confirmPass').value = '';
+            } catch(err) {
+                errorEl.innerText = err.message;
+                errorEl.style.display = 'block';
+            }
+        }
+
+        loadStats();
+    </script>
+</body>
+</html>

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Tech Nova | Admin Panel</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-wrapper { max-width: 1100px; margin: 30px auto; padding: 0 5%; }
+        .admin-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px;
+        }
+        .admin-grid {
+            display: grid; grid-template-columns: 1fr 1fr;
+            gap: 30px; margin-bottom: 30px;
+        }
+        .admin-card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 15px; padding: 25px;
+        }
+        .admin-card h3 {
+            font-size: 1rem; font-weight: 800; margin-bottom: 20px;
+            color: var(--primary); display: flex; align-items: center; gap: 10px;
+        }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 10px; border: 1px solid var(--border);
+            border-radius: 8px; background: var(--bg); color: var(--text);
+            font-size: 0.9rem; box-sizing: border-box;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary); outline: none; }
+        .btn-primary {
+            background: var(--primary); color: white; border: none;
+            width: 100%; padding: 12px; border-radius: 8px;
+            font-weight: 700; cursor: pointer; font-size: 0.95rem;
+        }
+        .btn-primary:hover { filter: brightness(1.1); }
+
+        .product-table { width: 100%; border-collapse: collapse; }
+        .product-table th {
+            text-align: left; padding: 12px; font-size: 0.75rem;
+            text-transform: uppercase; opacity: 0.5; border-bottom: 2px solid var(--border);
+        }
+        .product-table td {
+            padding: 12px; border-bottom: 1px solid var(--border);
+            font-size: 0.9rem; vertical-align: middle;
+        }
+        .product-table img { width: 45px; height: 45px; object-fit: contain; border-radius: 8px; }
+        .btn-edit {
+            background: #dbeafe; color: #2563eb; border: none;
+            padding: 6px 12px; border-radius: 6px; cursor: pointer;
+            font-weight: 600; font-size: 0.8rem; margin-right: 5px;
+        }
+        .btn-delete {
+            background: #fee2e2; color: #ef4444; border: none;
+            padding: 6px 12px; border-radius: 6px; cursor: pointer;
+            font-weight: 600; font-size: 0.8rem;
+        }
+        .cat-badge {
+            background: var(--primary); color: white;
+            padding: 3px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 700;
+        }
+        .sale-toggle {
+            display: flex; align-items: center; gap: 15px; margin-bottom: 15px;
+        }
+        .toggle-switch {
+            position: relative; width: 50px; height: 26px;
+        }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background: var(--border); border-radius: 26px; transition: 0.3s;
+        }
+        .toggle-slider:before {
+            position: absolute; content: ""; height: 20px; width: 20px;
+            left: 3px; bottom: 3px; background: white;
+            border-radius: 50%; transition: 0.3s;
+        }
+        input:checked + .toggle-slider { background: var(--primary); }
+        input:checked + .toggle-slider:before { transform: translateX(24px); }
+        .success-toast {
+            position: fixed; bottom: 30px; right: 30px;
+            background: #22c55e; color: white; padding: 15px 25px;
+            border-radius: 12px; display: none; font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 9999;
+        }
+        .stats-row {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 15px; margin-bottom: 30px;
+        }
+        .stat-box {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 20px; text-align: center;
+        }
+        .stat-box h3 { font-size: 1.8rem; color: var(--primary); font-weight: 900; }
+        .stat-box p { font-size: 0.75rem; opacity: 0.6; margin-top: 5px; }
+
+        /* Edit Modal */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); display: none; align-items: center;
+            justify-content: center; z-index: 2000; backdrop-filter: blur(5px);
+        }
+        .modal-box {
+            background: var(--card); border-radius: 20px; padding: 35px;
+            width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto;
+        }
+        .modal-box h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: 20px; color: var(--primary); }
+        .modal-close {
+            float: right; background: none; border: none; font-size: 1.5rem;
+            cursor: pointer; color: var(--text); margin-top: -5px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="brand" onclick="location.href='index.html'" style="cursor:pointer">
+            TECH NOVA <span style="font-size:0.6rem; background:#ef4444; color:white; padding:2px 8px; border-radius:4px; margin-left:8px;">ADMIN</span>
+        </div>
+        <div style="display:flex; gap:15px; align-items:center;">
+            <i class="fas fa-moon" onclick="toggleTheme()" style="cursor:pointer"></i>
+            <a href="index.html" style="text-decoration:none; color:var(--text); font-weight:600;">View Store</a>
+            <button onclick="logoutAdmin()" style="background:#fee2e2; color:#ef4444; border:none; padding:8px 16px; border-radius:8px; cursor:pointer; font-weight:700;">
+                <i class="fas fa-sign-out-alt"></i> Exit Admin
+            </button>
+        </div>
+    </nav>
+
+    <div class="admin-wrapper">
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-box">
+                <h3 id="stat-products">0</h3>
+                <p>Total Products</p>
+            </div>
+            <div class="stat-box">
+                <h3 id="stat-categories">0</h3>
+                <p>Categories</p>
+            </div>
+            <div class="stat-box">
+                <h3 id="stat-sale">OFF</h3>
+                <p>Sale Status</p>
+            </div>
+            <div class="stat-box">
+                <h3 id="stat-discount">0%</h3>
+                <p>Discount</p>
+            </div>
+        </div>
+
+        <div class="admin-grid">
+
+            <!-- Add Product Form -->
+            <div class="admin-card">
+                <h3><i class="fas fa-plus-circle"></i> Add New Product</h3>
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="add-name" placeholder="e.g. iPhone 16 Pro">
+                </div>
+                <div class="form-group">
+                    <label>Price (₹)</label>
+                    <input type="number" id="add-price" placeholder="e.g. 129900">
+                </div>
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="text" id="add-img" placeholder="https://...">
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="add-cat">
+                        <option value="Laptop">Laptop</option>
+                        <option value="Mobile">Mobile</option>
+                        <option value="Audio">Audio</option>
+                        <option value="Watch">Watch</option>
+                        <option value="Gaming">Gaming</option>
+                        <option value="Accessory">Accessory</option>
+                        <option value="Tablet">Tablet</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="add-desc" rows="3" placeholder="Product description..."></textarea>
+                </div>
+                <button class="btn-primary" onclick="addProduct()">
+                    <i class="fas fa-plus"></i> Add Product
+                </button>
+            </div>
+
+            <!-- Sale Settings -->
+            <div class="admin-card">
+                <h3><i class="fas fa-tag"></i> Sale Settings</h3>
+                <div class="sale-toggle">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="sale-toggle" onchange="updateSaleStatus()">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span id="sale-status-text" style="font-weight:700;">Sale is OFF</span>
+                </div>
+                <div class="form-group">
+                    <label>Sale Title</label>
+                    <input type="text" id="sale-title" placeholder="e.g. Summer SALE">
+                </div>
+                <div class="form-group">
+                    <label>Discount Percentage</label>
+                    <input type="number" id="sale-discount" placeholder="e.g. 10" min="1" max="90">
+                </div>
+                <button class="btn-primary" onclick="saveSaleSettings()">
+                    <i class="fas fa-save"></i> Save Sale Settings
+                </button>
+
+                <div style="margin-top:25px;">
+                    <h3 style="font-size:1rem; font-weight:800; margin-bottom:15px; color:var(--primary);">
+                        <i class="fas fa-chart-bar"></i> Quick Stats
+                    </h3>
+                    <p style="font-size:0.85rem; opacity:0.7; margin-bottom:8px;">
+                        <i class="fas fa-box"></i> Products in store: <strong id="quick-total">0</strong>
+                    </p>
+                    <p style="font-size:0.85rem; opacity:0.7; margin-bottom:8px;">
+                        <i class="fas fa-laptop"></i> Laptops: <strong id="quick-laptop">0</strong>
+                    </p>
+                    <p style="font-size:0.85rem; opacity:0.7; margin-bottom:8px;">
+                        <i class="fas fa-mobile-alt"></i> Mobiles: <strong id="quick-mobile">0</strong>
+                    </p>
+                    <p style="font-size:0.85rem; opacity:0.7; margin-bottom:8px;">
+                        <i class="fas fa-gamepad"></i> Gaming: <strong id="quick-gaming">0</strong>
+                    </p>
+                    <p style="font-size:0.85rem; opacity:0.7;">
+                        <i class="fas fa-tablet-alt"></i> Tablets: <strong id="quick-tablet">0</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="admin-card">
+            <h3><i class="fas fa-list"></i> All Products (<span id="product-count">0</span>)</h3>
+            <div style="overflow-x:auto;">
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="products-tbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <h3><i class="fas fa-edit"></i> Edit Product</h3>
+            <input type="hidden" id="edit-id">
+            <div class="form-group">
+                <label>Product Name</label>
+                <input type="text" id="edit-name">
+            </div>
+            <div class="form-group">
+                <label>Price (₹)</label>
+                <input type="number" id="edit-price">
+            </div>
+            <div class="form-group">
+                <label>Image URL</label>
+                <input type="text" id="edit-img">
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="edit-cat">
+                    <option value="Laptop">Laptop</option>
+                    <option value="Mobile">Mobile</option>
+                    <option value="Audio">Audio</option>
+                    <option value="Watch">Watch</option>
+                    <option value="Gaming">Gaming</option>
+                    <option value="Accessory">Accessory</option>
+                    <option value="Tablet">Tablet</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="edit-desc" rows="3"></textarea>
+            </div>
+            <button class="btn-primary" onclick="saveEdit()">
+                <i class="fas fa-save"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    <div class="success-toast" id="toast"></div>
+
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // ── Admin Password Protection ─────────────────────────
+        const ADMIN_PASSWORD = "technova@admin2024";
+        const isAdminAuth = sessionStorage.getItem('adminAuth');
+
+        if (!isAdminAuth) {
+            const entered = prompt("🔐 Enter Admin Password:");
+            if (entered !== ADMIN_PASSWORD) {
+                alert("❌ Wrong password! Access denied.");
+                window.location.href = "index.html";
+            } else {
+                sessionStorage.setItem('adminAuth', 'true');
+            }
+        }
+
+        // ── Theme ─────────────────────────────────────────────
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+
+        let allProducts = [];
+
+        // ── Load Products ─────────────────────────────────────
+        async function loadProducts() {
+            const res = await fetch('http://localhost:5000/api/products');
+            allProducts = await res.json();
+
+            document.getElementById('product-count').innerText = allProducts.length;
+            document.getElementById('stat-products').innerText = allProducts.length;
+            document.getElementById('quick-total').innerText = allProducts.length;
+
+            const cats = [...new Set(allProducts.map(p => p.cat))];
+            document.getElementById('stat-categories').innerText = cats.length;
+
+            document.getElementById('quick-laptop').innerText = allProducts.filter(p => p.cat === 'Laptop').length;
+            document.getElementById('quick-mobile').innerText = allProducts.filter(p => p.cat === 'Mobile').length;
+            document.getElementById('quick-gaming').innerText = allProducts.filter(p => p.cat === 'Gaming').length;
+            document.getElementById('quick-tablet').innerText = allProducts.filter(p => p.cat === 'Tablet').length;
+
+            const tbody = document.getElementById('products-tbody');
+            tbody.innerHTML = allProducts.map(p => `
+                <tr>
+                    <td><img src="${p.img}" alt="${p.name}"></td>
+                    <td><strong>${p.name}</strong></td>
+                    <td><span class="cat-badge">${p.cat}</span></td>
+                    <td style="color:var(--primary); font-weight:700;">₹${p.price.toLocaleString()}</td>
+                    <td>
+                        <button class="btn-edit" onclick="openEdit('${p._id}')"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="btn-delete" onclick="deleteProduct('${p._id}', '${p.name}')"><i class="fas fa-trash"></i> Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // ── Sale Settings ─────────────────────────────────────
+        async function loadSaleSettings() {
+            const settings = await fetchSettings();
+            document.getElementById('sale-toggle').checked = settings.isSaleActive;
+            document.getElementById('sale-title').value = settings.saleTitle;
+            document.getElementById('sale-discount').value = settings.discountPercentage;
+            document.getElementById('stat-sale').innerText = settings.isSaleActive ? 'ON' : 'OFF';
+            document.getElementById('stat-sale').style.color = settings.isSaleActive ? '#22c55e' : '#ef4444';
+            document.getElementById('stat-discount').innerText = settings.discountPercentage + '%';
+            document.getElementById('sale-status-text').innerText = settings.isSaleActive ? 'Sale is ON' : 'Sale is OFF';
+        }
+
+        function updateSaleStatus() {
+            const isOn = document.getElementById('sale-toggle').checked;
+            document.getElementById('sale-status-text').innerText = isOn ? 'Sale is ON' : 'Sale is OFF';
+        }
+
+        async function saveSaleSettings() {
+            const isActive = document.getElementById('sale-toggle').checked;
+            const title    = document.getElementById('sale-title').value;
+            const discount = parseInt(document.getElementById('sale-discount').value);
+
+            if (!title || !discount) return alert('Please fill all sale fields!');
+
+            try {
+                await updateSettings({
+                    isSaleActive: isActive,
+                    saleTitle: title,
+                    discountPercentage: discount
+                });
+
+                document.getElementById('stat-sale').innerText = isActive ? 'ON' : 'OFF';
+                document.getElementById('stat-sale').style.color = isActive ? '#22c55e' : '#ef4444';
+                document.getElementById('stat-discount').innerText = discount + '%';
+                document.getElementById('sale-status-text').innerText = isActive ? 'Sale is ON' : 'Sale is OFF';
+
+                showToast('✅ Sale settings saved to database!');
+            } catch(err) {
+                alert('Error saving settings: ' + err.message);
+            }
+        }
+
+        // ── Add Product ───────────────────────────────────────
+        async function addProduct() {
+            const name  = document.getElementById('add-name').value.trim();
+            const price = parseInt(document.getElementById('add-price').value);
+            const img   = document.getElementById('add-img').value.trim();
+            const cat   = document.getElementById('add-cat').value;
+            const description = document.getElementById('add-desc').value.trim();
+
+            if (!name || !price || !img || !description)
+                return alert('Please fill all fields!');
+
+            try {
+                const res = await fetch('http://localhost:5000/api/products/add', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, price, img, cat, description })
+                });
+                if (!res.ok) throw new Error('Failed to add product');
+
+                document.getElementById('add-name').value = '';
+                document.getElementById('add-price').value = '';
+                document.getElementById('add-img').value = '';
+                document.getElementById('add-desc').value = '';
+
+                await loadProducts();
+                showToast('✅ Product added successfully!');
+            } catch(err) {
+                alert('Error: ' + err.message);
+            }
+        }
+
+        // ── Edit Product ──────────────────────────────────────
+        function openEdit(id) {
+            const p = allProducts.find(x => x._id === id);
+            if (!p) return;
+
+            document.getElementById('edit-id').value   = p._id;
+            document.getElementById('edit-name').value = p.name;
+            document.getElementById('edit-price').value = p.price;
+            document.getElementById('edit-img').value  = p.img;
+            document.getElementById('edit-cat').value  = p.cat;
+            document.getElementById('edit-desc').value = p.description;
+
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        async function saveEdit() {
+            const id    = document.getElementById('edit-id').value;
+            const name  = document.getElementById('edit-name').value.trim();
+            const price = parseInt(document.getElementById('edit-price').value);
+            const img   = document.getElementById('edit-img').value.trim();
+            const cat   = document.getElementById('edit-cat').value;
+            const description = document.getElementById('edit-desc').value.trim();
+
+            try {
+                const res = await fetch(`http://localhost:5000/api/products/edit/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, price, img, cat, description })
+                });
+                if (!res.ok) throw new Error('Failed to update product');
+
+                closeModal();
+                await loadProducts();
+                showToast('✅ Product updated successfully!');
+            } catch(err) {
+                alert('Error: ' + err.message);
+            }
+        }
+
+        // ── Delete Product ────────────────────────────────────
+        async function deleteProduct(id, name) {
+            if (!confirm(`Are you sure you want to delete "${name}"?`)) return;
+
+            try {
+                const res = await fetch(`http://localhost:5000/api/products/delete/${id}`, {
+                    method: 'DELETE'
+                });
+                if (!res.ok) throw new Error('Failed to delete product');
+
+                await loadProducts();
+                showToast('🗑️ Product deleted!');
+            } catch(err) {
+                alert('Error: ' + err.message);
+            }
+        }
+
+        // ── Toast Notification ────────────────────────────────
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 3000);
+        }
+
+        function logoutAdmin() {
+            sessionStorage.removeItem('adminAuth');
+            window.location.href = 'index.html';
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+            localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        }
+
+        // ── Init ──────────────────────────────────────────────
+        loadProducts();
+        loadSaleSettings();
+    </script>
+</body>
+</html>

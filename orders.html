@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tech Nova | Your Orders</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .orders-wrapper { max-width: 900px; margin: 40px auto; padding: 0 5%; }
+        .order-card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 15px; padding: 25px; margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .order-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 15px;
+        }
+        .order-id { font-weight: 800; color: var(--primary); font-size: 1.1rem; }
+        .order-date { font-size: 0.85rem; opacity: 0.6; }
+        
+        .order-item {
+            display: flex; justify-content: space-between; padding: 8px 0;
+            font-size: 0.95rem; border-bottom: 1px dashed var(--border);
+        }
+        .order-total {
+            text-align: right; margin-top: 15px; font-size: 1.2rem; font-weight: 800;
+            color: var(--primary);
+        }
+        .empty-state { text-align: center; padding: 60px; opacity: 0.5; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="brand" onclick="location.href='index.html'" style="cursor:pointer">TECH NOVA</div>
+        <div style="display:flex; gap:20px; align-items:center;">
+            <span id="user-tag" style="font-size:0.8rem; font-weight:600; opacity:0.7;"></span>
+            <a href="index.html" style="text-decoration:none; color:var(--text); font-weight:600;">Home</a>
+        </div>
+    </nav>
+
+    <div class="orders-wrapper">
+        <h2 style="margin-bottom:30px;">Order History</h2>
+        <div id="history-list"></div>
+    </div>
+
+  <script src="api.js"></script>
+<script>
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+    const activeUser = localStorage.getItem('activeUser') || "Guest";
+    document.getElementById('user-tag').innerText = "Logged in: " + activeUser;
+
+    async function renderOrders() {
+        const container = document.getElementById('history-list');
+        
+        try {
+            const orders = await fetchOrders();
+
+            if (orders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-box-open" style="font-size:3rem; margin-bottom:15px;"></i>
+                        <h3>No orders found.</h3>
+                        <p>Start shopping to see your history here!</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = orders.map(order => `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div>
+                            <span class="order-id">Order ID: #${order.orderId}</span>
+                            <div class="order-date"><i class="far fa-calendar-alt"></i> ${new Date(order.createdAt).toLocaleString()}</div>
+                        </div>
+                        <span style="background:var(--primary); color:white; padding:4px 12px; border-radius:20px; font-size:0.7rem; font-weight:bold;">COMPLETED</span>
+                    </div>
+                    
+                    <div class="order-details">
+                        <p style="font-size:0.8rem; font-weight:700; margin-bottom:10px; opacity:0.8;">SHIPPING TO: ${order.customer}</p>
+                        ${order.items.map(item => `
+                            <div class="order-item">
+                                <span>${item.name} <span style="opacity:0.6;">x ${item.qty}</span></span>
+                                <span>₹${(item.price * item.qty).toLocaleString()}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="order-total">
+                        Total Amount: ₹${order.total.toLocaleString()}
+                    </div>
+                </div>
+            `).join('');
+
+        } catch(err) {
+            container.innerHTML = `<p style="text-align:center; opacity:0.5;">Failed to load orders.</p>`;
+        }
+    }
+
+    renderOrders();
+</script>
+</body>
+</html>

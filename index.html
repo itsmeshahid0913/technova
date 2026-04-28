@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Tech Nova | Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="promo-banner" id="banner"></div>
+
+    <nav>
+        <div onclick="location.href='index.html'" class="brand">
+            TECH NOVA <span class="tagline">Exclusive Tech Store</span>
+        </div>
+        <div style="display:flex; gap:20px; align-items:center;">
+            <i class="fas fa-moon" onclick="toggleTheme()" style="cursor:pointer"></i>
+            <a href="profile.html" id="user-display" style="font-weight:700; color:var(--primary); text-decoration:none;"></a>
+            <a href="orders.html" style="text-decoration:none; color:var(--text); font-weight:600;">Orders</a>
+            <a href="cart.html" style="position:relative; color:var(--text);">
+                <i class="fas fa-shopping-bag"></i>
+                <span id="cart-count" style="position:absolute; top:-10px; right:-10px; background:red; color:white; border-radius:50%; padding:2px 6px; font-size:10px;">0</span>
+            </a>
+            <button class="btn-logout" onclick="logoutUser()">LOGOUT</button>
+        </div>
+    </nav>
+
+    <div style="padding: 20px 5%; display: flex; gap: 15px;">
+        <input type="text" id="searchInput" placeholder="Search tech..." onkeyup="filterItems()" style="flex:1; padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--card); color:var(--text);">
+    <select id="catFilter" onchange="filterItems()" style="padding:12px; border-radius:8px; border:1px solid var(--border); background:var(--card); color:var(--text);">
+    <option value="All">All Categories</option>
+    <option value="Laptop">Laptops</option>
+    <option value="Mobile">Mobiles</option>
+    <option value="Audio">Audio</option>
+    <option value="Watch">Watches</option>
+    <option value="Gaming">Gaming</option>
+    <option value="Accessory">Accessories</option>
+    <option value="Tablet">Tablets</option>
+    </select>
+    </div>
+
+    <div class="product-grid" id="main-grid"></div>
+
+    <div id="add-popup"><i class="fas fa-check-circle"></i> Added to Cart!</div>
+    
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+    <script>
+        async function renderItems(data) {
+            const grid = document.getElementById('main-grid');
+            if(data.length === 0) {
+                grid.innerHTML = `<h3 style="grid-column:1/-1; text-align:center; opacity:0.5; padding:50px;">No products found.</h3>`;
+                return;
+            }
+            grid.innerHTML = data.map(p => {
+                const discount = (p.price * storeSettings.discountPercentage) / 100;
+                const finalPrice = storeSettings.isSaleActive ? (p.price - discount) : p.price;
+                return `
+                    <div class="p-card">
+                        ${storeSettings.isSaleActive ? `<div class="discount-tag">${storeSettings.discountPercentage}% OFF</div>` : ''}
+                        <img src="${p.img}">
+                        <h3 style="font-size:0.9rem; margin:10px 0;">${p.name}</h3>
+                        <p style="color:var(--primary); font-weight:800;">₹${finalPrice.toLocaleString()}</p>
+                        <div class="actions">
+    <button class="btn-buy" onclick="quickBuy('${p._id}', ${p.price})">Buy Now</button>
+    <button class="btn-cart" onclick="addToCartAPI('${p._id}', '${p.name}', ${finalPrice}, '${p.img}')"><i class="fas fa-cart-plus"></i></button>
+</div>
+<button onclick="location.href='product.html?id=${p._id}'" style="width:100%; margin-top:8px; padding:8px; border-radius:6px; border:1px solid var(--border); background:transparent; color:var(--text); cursor:pointer; font-weight:600;">
+    <i class="fas fa-eye"></i> View Details
+</button>
+                    </div>`;
+            }).join('');
+        }
+
+        let allProducts = [];
+
+        async function filterItems() {
+            const txt = document.getElementById('searchInput').value.toLowerCase();
+            const cat = document.getElementById('catFilter').value;
+            const filtered = allProducts.filter(p => (cat === "All" || p.cat === cat) && p.name.toLowerCase().includes(txt));
+            renderItems(filtered);
+        }
+
+        async function addToCartAPI(productId, name, price, img) {
+            try {
+                await addToCart({ productId, name, price, img });
+                updateNavbar();
+                showPopup();
+            } catch(err) {
+                alert('Please login first!');
+            }
+        }
+
+        async function quickBuy(id, price) {
+            const product = allProducts.find(p => p._id === id);
+            const discount = (product.price * storeSettings.discountPercentage) / 100;
+            const currentPrice = storeSettings.isSaleActive ? (product.price - discount) : product.price;
+            localStorage.setItem('temp_buy', JSON.stringify([{...product, price: currentPrice, qty: 1}]));
+            window.location.href = "checkout.html";
+        }
+
+     let storeSettings = { isSaleActive: false, saleTitle: '', discountPercentage: 0 };
+
+        async function init() {
+            storeSettings = await fetchSettings();
+            const b = document.getElementById('banner');
+            if(storeSettings.isSaleActive) {
+                b.innerHTML = `${storeSettings.saleTitle}: ${storeSettings.discountPercentage}% OFF`;
+            } else { b.style.display = 'none'; }
+
+            const data = await fetchProducts();
+            allProducts = data;
+            renderItems(allProducts);
+        }
+
+        init();
+    </script>
+</body>
+</html>

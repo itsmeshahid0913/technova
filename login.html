@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Tech Nova | Secure Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            display: flex; align-items: center; justify-content: center;
+            height: 100vh; margin: 0; background: var(--bg);
+        }
+        .login-box {
+            background: var(--card); padding: 40px; border-radius: 15px;
+            border: 1px solid var(--border); box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 100%; max-width: 380px; text-align: center;
+        }
+        .login-box h2 { margin-bottom: 10px; color: var(--primary); font-weight: 800; }
+        .login-box p { font-size: 0.85rem; opacity: 0.6; margin-bottom: 25px; }
+
+        .tab-switcher {
+            display: flex; background: var(--bg); border-radius: 10px;
+            padding: 4px; margin-bottom: 25px; border: 1px solid var(--border);
+        }
+        .tab-btn {
+            flex: 1; padding: 10px; border: none; background: none;
+            color: var(--text); font-weight: 600; font-size: 0.85rem;
+            border-radius: 8px; cursor: pointer; transition: 0.2s;
+        }
+        .tab-btn.active {
+            background: var(--primary); color: white;
+        }
+
+        .input-field {
+            position: relative; margin-bottom: 15px; text-align: left;
+        }
+        .input-field i {
+            position: absolute; left: 12px; top: 38px; opacity: 0.5;
+        }
+        .input-field label { font-size: 0.8rem; font-weight: 600; margin-bottom: 5px; display: block; }
+        .input-field input {
+            width: 100%; padding: 12px 12px 12px 35px; border-radius: 8px;
+            border: 1px solid var(--border); background: var(--bg); color: var(--text);
+            font-size: 0.9rem; box-sizing: border-box;
+        }
+        .input-field input:focus { border-color: var(--primary); outline: none; }
+
+        .btn-login {
+            background: var(--primary); color: white; border: none;
+            width: 100%; padding: 12px; border-radius: 8px;
+            font-weight: 700; cursor: pointer; margin-top: 10px; font-size: 0.95rem;
+        }
+        .btn-login:hover { opacity: 0.9; transform: translateY(-2px); }
+        
+        .error-msg { color: #ef4444; font-size: 0.8rem; margin-top: 10px; display: none; }
+        .success-msg { color: #22c55e; font-size: 0.8rem; margin-top: 10px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="login-box">
+        <h2>TECH NOVA</h2>
+        <p>Access your premium electronics account</p>
+
+        <!-- Tab Switcher -->
+        <div class="tab-switcher">
+            <button class="tab-btn active" id="loginTab" onclick="switchTab('login')">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+            <button class="tab-btn" id="registerTab" onclick="switchTab('register')">
+                <i class="fas fa-user-plus"></i> Register
+            </button>
+        </div>
+
+        <!-- Login Form -->
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="input-field">
+                <label>Username</label>
+                <i class="fas fa-user"></i>
+                <input type="text" id="loginUser" placeholder="Enter username" required>
+            </div>
+            <div class="input-field">
+                <label>Password</label>
+                <i class="fas fa-lock"></i>
+                <input type="password" id="loginPass" placeholder="••••••••" required>
+            </div>
+            <div id="loginError" class="error-msg">Incorrect username or password!</div>
+            <button type="submit" class="btn-login">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </form>
+
+        <!-- Register Form -->
+        <form id="registerForm" style="display:none;" onsubmit="handleRegister(event)">
+            <div class="input-field">
+                <label>Username</label>
+                <i class="fas fa-user"></i>
+                <input type="text" id="regUser" placeholder="Choose a username" required>
+            </div>
+            <div class="input-field">
+                <label>Password</label>
+                <i class="fas fa-lock"></i>
+                <input type="password" id="regPass" placeholder="••••••••" required>
+            </div>
+            <div class="input-field">
+                <label>Confirm Password</label>
+                <i class="fas fa-lock"></i>
+                <input type="password" id="regConfirm" placeholder="••••••••" required>
+            </div>
+            <div id="registerError" class="error-msg"></div>
+            <div id="registerSuccess" class="success-msg">Account created! Please login.</div>
+            <button type="submit" class="btn-login">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+        </form>
+    </div>
+
+    <script src="api.js"></script>
+    <script>
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+
+        function switchTab(tab) {
+            const isLogin = tab === 'login';
+            document.getElementById('loginForm').style.display    = isLogin ? 'block' : 'none';
+            document.getElementById('registerForm').style.display = isLogin ? 'none'  : 'block';
+            document.getElementById('loginTab').classList.toggle('active', isLogin);
+            document.getElementById('registerTab').classList.toggle('active', !isLogin);
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUser').value.trim();
+            const password = document.getElementById('loginPass').value;
+            const errorEl  = document.getElementById('loginError');
+            errorEl.style.display = 'none';
+
+            try {
+                await loginOrRegister(username, password);
+                window.location.href = 'index.html';
+            } catch(err) {
+                errorEl.innerText = err.message;
+                errorEl.style.display = 'block';
+                document.getElementById('loginPass').value = '';
+            }
+        }
+
+       async function handleRegister(e) {
+    e.preventDefault();
+    const username  = document.getElementById('regUser').value.trim();
+    const password  = document.getElementById('regPass').value;
+    const confirm   = document.getElementById('regConfirm').value;
+    const errorEl   = document.getElementById('registerError');
+    const successEl = document.getElementById('registerSuccess');
+
+    errorEl.style.display   = 'none';
+    successEl.style.display = 'none';
+
+    if (password !== confirm) {
+        errorEl.innerText = 'Passwords do not match!';
+        errorEl.style.display = 'block';
+        return;
+    }
+
+    if (password.length < 4) {
+        errorEl.innerText = 'Password must be at least 4 characters!';
+        errorEl.style.display = 'block';
+        return;
+    }
+
+try {
+        await registerUser(username, password);
+        // Auto login after register
+        await loginOrRegister(username, password);
+        window.location.href = 'index.html';
+    } catch(err) {
+        errorEl.innerText = err.message;
+        errorEl.style.display = 'block';
+    }
+}
+    </script>
+</body>
+</html>

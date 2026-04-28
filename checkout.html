@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <title>Tech Nova | Secure Checkout</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .checkout-container { 
+            max-width: 600px; 
+            margin: 50px auto; 
+            padding: 0 20px; 
+        }
+        .checkout-box { 
+            background: var(--card); 
+            padding: 40px; 
+            border-radius: 20px; 
+            border: 1px solid var(--border); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        h2 { margin-bottom: 10px; color: var(--primary); font-weight: 800; text-align: center; }
+        p.subtitle { text-align: center; opacity: 0.6; font-size: 0.85rem; margin-bottom: 30px; }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.75rem; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+        input, textarea, select { 
+            width: 100%; padding: 14px; border: 1px solid var(--border); 
+            border-radius: 10px; background: var(--bg); color: var(--text); 
+            font-size: 0.95rem; transition: 0.2s;
+        }
+        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+
+        .btn-confirm { 
+            background: var(--primary); color: white; border: none; 
+            width: 100%; padding: 16px; border-radius: 10px; 
+            font-weight: 700; font-size: 1rem; cursor: pointer; 
+            margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 10px;
+        }
+        .btn-confirm:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+        /* SUCCESS TICK OVERLAY */
+        #success-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); display: none; align-items: center; justify-content: center;
+            z-index: 2000; flex-direction: column; color: white; backdrop-filter: blur(10px);
+        }
+        .success-content { text-align: center; animation: zoomIn 0.4s ease; }
+        .check-icon { font-size: 6rem; color: #22c55e; margin-bottom: 20px; animation: bounceIn 0.6s ease; }
+
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+        @keyframes bounceIn { 0% { transform: scale(0.3); opacity: 0; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="brand" onclick="location.href='index.html'" style="cursor:pointer">TECH NOVA</div>
+        <a href="index.html" style="text-decoration:none; color:var(--text); font-weight:600;">Cancel</a>
+    </nav>
+
+    <div class="checkout-container">
+        <div class="checkout-box">
+            <h2>Secure Checkout</h2>
+            <p class="subtitle">Complete your shipping details to place the order</p>
+            
+            <form id="payForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="name" placeholder="Rahul Sharma" required>
+                </div>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="email" placeholder="rahul@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="phone" placeholder="9876543210" pattern="[0-9]{10}" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Shipping Address</label>
+                    <textarea id="addr" rows="3" placeholder="House No, Street, Landmark, City..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Payment Method</label>
+                 <select id="method">
+    <option value="COD">Cash on Delivery</option>
+    <option value="UPI" disabled>UPI (GPay / PhonePe) — Coming Soon 🔧</option>
+    <option value="Card" disabled>Debit / Credit Card — Coming Soon 🔧</option>
+</select>
+<div style="background:#fef9c3; border:1px solid #fde047; border-radius:8px; padding:12px; margin-top:10px; font-size:0.85rem; color:#854d0e;">
+    <i class="fas fa-tools"></i> <strong>Online payments coming soon!</strong> Currently only Cash on Delivery is available.
+</div>
+                </div>
+
+                <button type="submit" class="btn-confirm">
+                    <i class="fas fa-lock"></i> PLACE ORDER NOW
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="success-overlay">
+        <div class="success-content">
+            <i class="fas fa-check-circle check-icon"></i>
+            <h2 style="color:white;">Order Placed!</h2>
+            <p style="opacity:0.8;">Your Tech Nova delivery is on its way.</p>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+<script>
+    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+
+    document.getElementById('payForm').onsubmit = async (e) => {
+        e.preventDefault();
+
+        const temp = JSON.parse(localStorage.getItem('temp_buy'));
+        const cartItems = await fetchCart();
+        const itemsToBuy = temp ? temp : cartItems;
+
+        if(itemsToBuy.length === 0) return alert('No items to order!');
+
+        const orderData = {
+            customer: document.getElementById('name').value,
+            email:    document.getElementById('email').value,
+            phone:    document.getElementById('phone').value,
+            address:  document.getElementById('addr').value,
+            method:   document.getElementById('method').value,
+            items:    itemsToBuy.map(item => ({
+                productId: item.productId || item._id,
+                name:  item.name,
+                price: item.price,
+                img:   item.img,
+                qty:   item.qty
+            }))
+        };
+
+        try {
+            await placeOrder(orderData);
+            localStorage.removeItem('temp_buy');
+
+            document.getElementById('success-overlay').style.display = 'flex';
+            setTimeout(() => {
+                window.location.href = "orders.html";
+            }, 2300);
+        } catch(err) {
+            alert('Order failed: ' + err.message);
+        }
+    };
+</script>
+    
+</body>
+</html>

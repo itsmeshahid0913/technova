@@ -1,105 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" data-theme="light">
 <head>
-<title>Help Center - TechNova</title>
-<style>
-body{font-family:Arial;margin:0;background:#f5f7fb}
-header{background:#2563eb;color:#fff;padding:15px;font-size:22px}
-.container{max-width:900px;margin:auto;padding:40px}
-.card{background:#fff;padding:25px;border-radius:10px;box-shadow:0 0 10px rgba(0,0,0,0.08);margin-bottom:20px}
+    <meta charset="UTF-8">
+    <title>Help Center | Tech Nova</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Shared Design System (Matches Order History Page) */
+        :root {
+            --bg: #f8fafc; --card: #ffffff; --primary: #3b82f6;
+            --text: #0f172a; --text-dim: #64748b; --border: #e2e8f0;
+        }
+        [data-theme="dark"] {
+            --bg: #0b0e14; --card: #151a24; --primary: #3b82f6;
+            --text: #ffffff; --text-dim: #94a3b8; --border: #262d3d;
+        }
 
-/* ===== Premium Mini Header ===== */
-.mini-header{
-  height:70px;
-  padding:0 60px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:#0f172a;
-  position:sticky;
-  top:0;
-  z-index:1000;
-}
+        body {
+            margin: 0; background: var(--bg); color: var(--text);
+            font-family: 'Inter', sans-serif; min-height: 100vh;
+        }
 
-/* Logo */
-.logo{
-  color:white;
-  font-size:26px;
-  font-weight:900;
-  letter-spacing:1px;
-  text-decoration:none;
-}
+        /* Navigation Bar (Unified) */
+        nav {
+            padding: 15px 5%; display: flex; justify-content: space-between;
+            align-items: center; background: var(--card); border-bottom: 1px solid var(--border);
+        }
+        .brand { font-weight: 900; color: var(--primary); font-size: 1.2rem; cursor: pointer; }
+        .nav-link { text-decoration: none; color: var(--text); font-weight: 600; font-size: 0.9rem; }
 
-/* Home button */
-.home-btn{
-  color:white;
-  text-decoration:none;
-  font-weight:600;
-  padding:10px 20px;
-  border:1px solid rgba(255,255,255,0.4);
-  border-radius:6px;
-  transition:0.25s;
-}
+        /* Page Content */
+        .wrapper { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+        .page-title { margin-bottom: 30px; display: flex; align-items: center; gap: 15px; }
+        .page-title i { color: var(--primary); }
 
-.home-btn:hover{
-  background:#2563eb;
-  border-color:#2563eb;
-}
-
-/* ===== Page content styling ===== */
-body{
-  margin:0;
-  font-family: 'Segoe UI', sans-serif;
-  background:#f1f5f9;
-}
-
-.container{
-  max-width:900px;
-  margin:70px auto;
-  padding:0 20px;
-}
-
-.container h1{
-  font-size:42px;
-  color:#0f172a;
-  margin-bottom:15px;
-}
-
-.container p{
-  font-size:18px;
-  color:#475569;
-  line-height:1.7;
-}
-
-/* ===== Mobile ===== */
-@media(max-width:768px){
-  .mini-header{
-    padding:0 20px;
-  }
-  .logo{font-size:22px;}
-  .home-btn{padding:8px 14px;}
-  .container h1{font-size:30px;}
-}
-</style>
+        /* Card Styling (Reusing order-card look) */
+        .faq-card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 20px; padding: 30px; margin-bottom: 20px;
+        }
+        h3 { margin-top: 0; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        .faq-item { margin-bottom: 25px; }
+        .faq-item p { margin: 5px 0 0 0; color: var(--text-dim); line-height: 1.6; }
+        
+        footer { padding: 40px; text-align: center; color: var(--text-dim); font-size: 0.8rem; }
+    </style>
 </head>
 <body>
 
-  <header class="mini-header">
-  <a href="index.html" class="logo">TechNova</a>
-  <a href="index.html" class="home-btn">Home</a>
-</header>
+    <nav>
+        <div class="brand" onclick="location.href='index.html'">TECH NOVA</div>
+        <a href="index.html" class="nav-link">
+            <i class="fas fa-home"></i> Home
+        </a>
+    </nav>
 
+    <div class="wrapper">
+        <div class="page-title">
+            <i class="fas fa-question-circle fa-2x"></i>
+            <h2>Help Center</h2>
+        </div>
 
-<header>Help Center</header>
+        <div class="faq-card">
+            <div class="faq-item">
+                <h3><i class="fas fa-shopping-cart"></i> How to place order?</h3>
+                <p>Select your favorite product, add it to your cart, and proceed to the checkout page to confirm your purchase.</p>
+            </div>
+            <div class="faq-item">
+                <h3><i class="fas fa-credit-card"></i> Payment methods?</h3>
+                <p>We support secure payments via UPI, Credit/Debit Cards, NetBanking, and Cash on Delivery (COD).</p>
+            </div>
+            <div class="faq-item">
+                <h3><i class="fas fa-envelope"></i> Order not received?</h3>
+                <p>Don't worry! If your package is delayed, please reach out to our support team at <strong>support@technova.com</strong> with your order ID.</p>
+            </div>
+        </div>
+    </div>
 
-<div class="container">
-<div class="card">
-<h2>Frequently Asked Questions</h2>
-<p><b>How to place order?</b><br>Select product → Add to cart → Checkout.</p>
-<p><b>Payment methods?</b><br>UPI, Cards, NetBanking, COD.</p>
-<p><b>Order not received?</b><br>Contact support@technova.com</p>
-</div>
-</div>
+    <footer>
+        © 2026 TechNova Store • All Rights Reserved
+    </footer>
 
+    <script>
+        // Apply theme from LocalStorage
+        document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'light');
+    </script>
 </body>
 </html>

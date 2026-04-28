@@ -154,7 +154,13 @@
                         <div class="order-header">
                             <div>
                                 <span class="order-id">Order #${order.orderId}</span>
-                                <div class="order-date"><i class="far fa-calendar-alt"></i> ${new Date(order.createdAt).toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'})}</div>
+                                <div class="order-date">
+                                    <i class="far fa-calendar-alt"></i> 
+                                    ${new Date(order.createdAt).toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'})}
+                                </div>
+                                <div class="order-date" style="margin-top: 5px; color: var(--primary);">
+                                    <i class="fas fa-truck"></i> Estimated Delivery: 3-5 Business Days
+                                </div>
                             </div>
                             <span class="status-badge">Order Placed</span>
                         </div>
@@ -178,7 +184,7 @@
                             <div class="order-total-val">₹${order.total.toLocaleString()}</div>
                         </div>
                     </div>
-                `).reverse().join(''); // Reversed to show newest orders at the top
+                `).reverse().join(''); 
 
             } catch(err) {
                 container.innerHTML = `<p style="text-align:center; padding:50px; opacity:0.5;">Failed to load order history. Please refresh.</p>`;
